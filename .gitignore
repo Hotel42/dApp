@@ -1,0 +1,12 @@
+
+#hardhat files
+cache
+node_modules
+artifacts
+
+# fe files
+frontend/src/hardhat
+frontend/src/node_modules
+
+# ide files
+dAppl.iml
