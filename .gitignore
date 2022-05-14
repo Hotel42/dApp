@@ -8,5 +8,7 @@ artifacts
 frontend/src/hardhat
 frontend/src/node_modules
 
-# ide files
-dAppl.iml
+# IntelliJ IDE files
+dApp.iml
+workspace.xml
+.idea
