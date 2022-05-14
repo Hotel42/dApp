@@ -4,11 +4,10 @@ cache
 node_modules
 artifacts
 
-# fe files
-frontend/src/hardhat
-frontend/src/node_modules
-
 # IntelliJ IDE files
 dApp.iml
 workspace.xml
 .idea
+
+# next.js files
+.next
