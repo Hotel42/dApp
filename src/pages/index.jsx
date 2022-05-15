@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { Provider, NETWORKS } from '@web3-ui/core';
+import {ConnectWallet} from "../components/ConnectWallet";
 
 export default function Home() {
   return (
-    <div className="mx-auto max-w-7xl p-4">
-      hello
+    <div>
+      <Provider network={NETWORKS.rinkeby}>
+        <ConnectWallet/>
+      </Provider>
     </div>
-  );
+);
 }
