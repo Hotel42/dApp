@@ -4,12 +4,20 @@ import { Button } from '@chakra-ui/react'
 
 export const ConnectWallet = () => {
   const { connectWallet, connection, connected, disconnectWallet } = useWallet();
-  console.log('connected: ', connected)
   return (
-    <Button>
+    <Button onClick={connected ? disconnectWallet : connectWallet}>
       {connected
-        ? connection.ens || connection.userAddress
+        ? connection.ens || trimWalletAddress(connection.userAddress)
         : 'Connect wallet'}
     </Button>
   );
+}
+
+const trimWalletAddress = (walletAddress) => {
+  if (!walletAddress) {
+    return null;
+  }
+  const prefix = walletAddress.slice(0, 6);
+  const suffix = walletAddress.slice(walletAddress.length - 4);
+  return prefix + '...' + suffix;
 }
