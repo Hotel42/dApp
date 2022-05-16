@@ -5,7 +5,12 @@ import { Button } from '@chakra-ui/react'
 export const ConnectWallet = () => {
   const { connectWallet, connection, connected, disconnectWallet } = useWallet();
   return (
-    <Button onClick={connected ? disconnectWallet : connectWallet}>
+    <Button
+      bg="transparent"
+      border="1px"
+      colorScheme="teal"
+      onClick={connected ? disconnectWallet : connectWallet}
+    >
       {connected
         ? connection.ens || trimWalletAddress(connection.userAddress)
         : 'Connect wallet'}

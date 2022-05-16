@@ -5,9 +5,7 @@ import {ConnectWallet} from "../components/ConnectWallet";
 export default function Home() {
   return (
     <div>
-      <Provider network={NETWORKS.rinkeby}>
-        <ConnectWallet/>
-      </Provider>
+      HomePage
     </div>
 );
 }
