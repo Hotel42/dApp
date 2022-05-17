@@ -1,11 +1,17 @@
 import React from "react";
-import { Provider, NETWORKS } from '@web3-ui/core';
-import {ConnectWallet} from "../components/ConnectWallet";
+import ReservationCard from "../components/ReservationCard";
 
 export default function Home() {
   return (
     <div>
-      HomePage
+      <ReservationCard
+        startDate="April 29"
+        endDate="April 30"
+        propertyName="Marrtiot Internation"
+        location="Denver, CO"
+        isListed={true}
+        imageUrl="https://bit.ly/2Z4KKcF"
+      />
     </div>
 );
 }
