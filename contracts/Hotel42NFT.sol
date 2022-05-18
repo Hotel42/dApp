@@ -5,6 +5,7 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract Hotel42NFT is ERC721, Ownable {
     using Counters for Counters.Counter;
@@ -19,7 +20,8 @@ contract Hotel42NFT is ERC721, Ownable {
         string roomType;
     }
 
-    mapping(uint => HotelReservation) hotelReservationNFTMap;
+    mapping(uint256 => HotelReservation) hotelReservationNFTMap;
+    mapping(uint256 => string) private tokenID_tokenURI_map;
 
     Counters.Counter private _tokenIdCounter;
 
@@ -29,6 +31,22 @@ contract Hotel42NFT is ERC721, Ownable {
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
         _tokenIdCounter.increment();
+    }
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return
+            "https://gateway.pinata.cloud/ipfs/QmSzAckhtcBPTAfk71ejYEveBU92dnWob35dvBshUD4rqg/";
+    }
+
+    function setTokenURI(uint256 contentAddr) public {
+        //when metadata is pinned to Pinata on frontend, this func will be called take CID and map to its respective tokenID
+        uint256 tokenId = _tokenIdCounter.current();
+        string memory baseURI = _baseURI();
+        string memory token_uri = string(
+            abi.encodePacked(baseURI, Strings.toString(contentAddr))
+        );
+
+        tokenID_tokenURI_map[tokenId] = token_uri;
     }
 
     function confirmReservation(
