@@ -44,7 +44,6 @@ export const connectWallet = async () => {
     if (!ethereum) return null
 
     await ethereum.request({ method: "eth_requestAccounts" });
-    location.reload()
 }
 
 export const getCurrentAccount = async () => {

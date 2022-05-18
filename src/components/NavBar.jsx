@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Heading, Flex, Text, Button } from "@chakra-ui/react";
-import {ConnectWallet} from '../components/ConnectWallet';
+import {ConnectWallet} from './ConnectWallet';
 
 const MenuItems = ({ children }) => (
   <Button
@@ -51,7 +51,7 @@ const NavBar = (props) => {
         display={{ sm: show ? "block" : "none", md: "block" }}
         mt={{ base: 4, md: 0 }}
       >
-        <ConnectWallet/>
+        {/* <ConnectWallet/> */}
       </Box>
     </Flex>
   );

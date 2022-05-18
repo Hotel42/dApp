@@ -23,6 +23,7 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "confirmReservation(string,string,string,string,string,string,string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
@@ -44,6 +45,10 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "confirmReservation",
+    values: [string, string, string, string, string, string, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
@@ -91,6 +96,10 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "confirmReservation",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
@@ -219,6 +228,17 @@ export class Hotel42NFT extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    confirmReservation(
+      _firstName: string,
+      _lastName: string,
+      _email: string,
+      _hotelName: string,
+      _checkInDate: string,
+      _checkOutDate: string,
+      _roomType: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -302,6 +322,17 @@ export class Hotel42NFT extends BaseContract {
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+  confirmReservation(
+    _firstName: string,
+    _lastName: string,
+    _email: string,
+    _hotelName: string,
+    _checkInDate: string,
+    _checkOutDate: string,
+    _roomType: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
@@ -378,6 +409,17 @@ export class Hotel42NFT extends BaseContract {
     ): Promise<void>;
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    confirmReservation(
+      _firstName: string,
+      _lastName: string,
+      _email: string,
+      _hotelName: string,
+      _checkInDate: string,
+      _checkOutDate: string,
+      _roomType: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     getApproved(
       tokenId: BigNumberish,
@@ -524,6 +566,17 @@ export class Hotel42NFT extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    confirmReservation(
+      _firstName: string,
+      _lastName: string,
+      _email: string,
+      _hotelName: string,
+      _checkInDate: string,
+      _checkOutDate: string,
+      _roomType: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -609,6 +662,17 @@ export class Hotel42NFT extends BaseContract {
     balanceOf(
       owner: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    confirmReservation(
+      _firstName: string,
+      _lastName: string,
+      _email: string,
+      _hotelName: string,
+      _checkInDate: string,
+      _checkOutDate: string,
+      _roomType: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getApproved(
