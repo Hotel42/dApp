@@ -8,6 +8,8 @@ import {
   Button,
 } from '@chakra-ui/react'
 import {useContracts} from '../contexts';
+const pinataSDK = require('@pinata/sdk');
+const pinata = pinataSDK(process.env.pinataApiKey, process.env.pinataSecretApiKey);
 
 
 const MintReservationForm = () => {
@@ -99,6 +101,46 @@ const MintReservationForm = () => {
 
       <Button colorScheme="teal" onClick={async () => {
           try {
+
+            let inDate = new Date(checkInDate);
+            inDate = inDate.toISOString();      //inorder to query on date values in IPFS the values must be ISO_8601 format
+
+            let outDate = new Date(checkOutDate);
+            outDate = outDate.toISOString();    
+
+            const NFT_metadata = {
+              firstName: firstName,
+              lastName: lastName,
+              email: email,
+              hotelName: hotelName,
+              checkInDate: inDate,
+              checkOutDate: outDate,
+              roomType: roomType,
+              image: 'https://gateway.pinata.cloud/ipfs/QmVXTa57AAeEzLpxLfV2RGcPGa46UxxaRNy1KQcH71btfM',  //using generic image for all NFTs so hardcoded its location on IPFS
+              isSale: 'false'   //parameter used to distinguish between NFTs that will be seen on the marketplace
+            };
+
+            const pinata_metadata = {           //pinned data can only be queried on pinata metadata therefore adding this as part of JSON 
+                pinataMetadata: {
+                    keyvalues: {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        hotelName: hotelName,
+                        checkInDate: inDate,       
+                        checkOutDate: outDate,  
+                        roomType: roomType,
+                        image: 'https://gateway.pinata.cloud/ipfs/QmVXTa57AAeEzLpxLfV2RGcPGa46UxxaRNy1KQcH71btfM',
+                        isSale: 'false'
+                    }
+                }
+            };
+
+            const result = await pinata.pinJSONToIPFS(NFT_metadata, pinata_metadata);
+            let ipfs_hash = result.IpfsHash;        //content address for minted NFT on IPFS
+            console.log("Content pinned successfully. IPFS hash is: ", ipfs_hash);
+            
+
             const tx = hotel42NftContract.confirmReservation(
               firstName,
               lastName,
@@ -107,6 +149,7 @@ const MintReservationForm = () => {
               checkInDate,
               checkOutDate,
               roomType,
+              ipfs_hash
             );
             await tx.wait();
             console.log('succesfully minted it!');
