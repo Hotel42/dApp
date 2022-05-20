@@ -32,7 +32,7 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         _tokenIdCounter.increment();
     }
 
-    function _baseURI() internal view override returns (string memory) {
+    function _baseURI() internal pure override returns (string memory) {
         return "https://gateway.pinata.cloud/ipfs/";
     }
 
