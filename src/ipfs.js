@@ -16,7 +16,7 @@ function changeJSON(jsonObj, key, newValue) {   //updates the key in a JSON obje
   }
 
 
-function update_sale_status_IPFS(nftURL) {           //when user wishes to put their reservation for sale
+function update_sale_status_IPFS(nftURL) {           //when user wishes to put their reservation for sale or decides not to sell
 
     try {
 
@@ -24,8 +24,12 @@ function update_sale_status_IPFS(nftURL) {           //when user wishes to put t
 
         const jsonObj = await response.json();
 
-        //change the value of isSale to true
-        changeJSON(jsonObj, 'isSale', 'true');
+        if(jsonObj.isSale == 'true'){
+            changeJSON(jsonObj, 'isSale', 'false');  //change the value of isSale to true
+        } else {
+            changeJSON(jsonObj, 'isSale', 'true');
+        }
+
 
         const pinata_metadata = {
             pinataMetadata: {
