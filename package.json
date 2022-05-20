@@ -27,6 +27,7 @@
     "hardhat-contract-sizer": "^2.5.1",
     "magic-sdk": "^8.1.1",
     "next": "12.0.8",
+    "node-fetch": "2.6.6",
     "react": "^18.2.0-next-2c8a1452b-20220512",
     "react-dom": "^18.2.0-next-2c8a1452b-20220512",
     "react-toastify": "^8.2.0",

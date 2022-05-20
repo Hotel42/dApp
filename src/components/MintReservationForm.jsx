@@ -8,8 +8,7 @@ import {
   Button,
 } from '@chakra-ui/react'
 import {useContracts} from '../contexts';
-const pinataSDK = require('@pinata/sdk');
-const pinata = pinataSDK(process.env.pinataApiKey, process.env.pinataSecretApiKey);
+import {pin_nft_IPFS} from './ipfs.js';
 
 
 const MintReservationForm = () => {
@@ -108,7 +107,7 @@ const MintReservationForm = () => {
             let outDate = new Date(checkOutDate);
             outDate = outDate.toISOString();    
 
-            const NFT_metadata = {
+            const NFT_metadata = {      //nft metadata in json format inorder to write to IPFS
               firstName: firstName,
               lastName: lastName,
               email: email,
@@ -117,28 +116,16 @@ const MintReservationForm = () => {
               checkOutDate: outDate,
               roomType: roomType,
               image: 'https://gateway.pinata.cloud/ipfs/QmVXTa57AAeEzLpxLfV2RGcPGa46UxxaRNy1KQcH71btfM',  //using generic image for all NFTs so hardcoded its location on IPFS
-              isSale: 'false'   //parameter used to distinguish between NFTs that will be seen on the marketplace
+              isSale: 'false'   //parameter used to make sure only NFTs that are on sale can be seen on marketplace
             };
 
-            const pinata_metadata = {           //pinned data can only be queried on pinata metadata therefore adding this as part of JSON 
+            const pinata_metadata = {           //everytime we write to IPFS we need to include Pinata metadata so we can query the data later 
                 pinataMetadata: {
-                    keyvalues: {
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email,
-                        hotelName: hotelName,
-                        checkInDate: inDate,       
-                        checkOutDate: outDate,  
-                        roomType: roomType,
-                        image: 'https://gateway.pinata.cloud/ipfs/QmVXTa57AAeEzLpxLfV2RGcPGa46UxxaRNy1KQcH71btfM',
-                        isSale: 'false'
-                    }
+                    keyvalues: NFT_metadata
                 }
             };
 
-            const result = await pinata.pinJSONToIPFS(NFT_metadata, pinata_metadata);
-            let ipfs_hash = result.IpfsHash;        //content address for minted NFT on IPFS
-            console.log("Content pinned successfully. IPFS hash is: ", ipfs_hash);
+            const ipfs_hash = pin_nft_IPFS(NFT_metadata, pinata_metadata);
             
 
             const tx = hotel42NftContract.confirmReservation(
