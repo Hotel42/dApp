@@ -2,11 +2,27 @@ const { ethers } = require("hardhat");
 
 // prevents side effect from different tests with conflicting state
 const doFreshDeploy = async (contractName) => {
-    const hotel42NFTactory = await ethers.getContractFactory(contractName);
-    const hotel42NFT = await hotel42NFTactory.deploy();
-    await hotel42NFT.deployed();
+    const contractFactory = await ethers.getContractFactory(contractName);
+    const deployedContract = await contractFactory.deploy();
+    await deployedContract.deployed();
 
-    return hotel42NFT;
+    return deployedContract;
 }
 
-module.exports = { doFreshDeploy }
+const mintNft = async (nftContract, owner, nftRecipient) => {
+    const mintResult = await nftContract.connect(owner).safeMint(nftRecipient.address);
+
+    return { mintResult }
+}
+
+const deployAndMint = async (nftContractName) => {
+    const nftContract = await doFreshDeploy(nftContractName);
+    const [owner, nftRecipient] = await ethers.getSigners();
+    const { mintResult } = await mintNft(nftContract, owner, nftRecipient)
+
+    return { nftContract, owner, nftOwner: nftRecipient, mintResult };
+}
+
+const getFirstEventArgs = event => event[0].args
+
+module.exports = { doFreshDeploy, deployAndMint, mintNft, getFirstEventArgs }

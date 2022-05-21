@@ -4,6 +4,8 @@ const { doFreshDeploy } = require('./test-helpers');
 
 const contractName = "Hotel42NFT";
 
+module.exports = { hotel42NFTContractName: contractName }
+
 describe(contractName, function async() {
     it("Should set the right owner", async function () {
         const hotel42NFT = await doFreshDeploy(contractName);
