@@ -11,3 +11,6 @@ workspace.xml
 
 # next.js files
 .next
+
+# environment variables
+.env

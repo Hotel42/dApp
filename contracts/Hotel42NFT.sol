@@ -3,10 +3,11 @@ pragma solidity ^0.8.4;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract Hotel42NFT is ERC721, Ownable {
+contract Hotel42NFT is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     struct HotelReservation {
@@ -19,7 +20,7 @@ contract Hotel42NFT is ERC721, Ownable {
         string roomType;
     }
 
-    mapping(uint => HotelReservation) hotelReservationNFTMap;
+    mapping(uint256 => HotelReservation) hotelReservationNFTMap;
 
     Counters.Counter private _tokenIdCounter;
 
@@ -31,6 +32,10 @@ contract Hotel42NFT is ERC721, Ownable {
         _tokenIdCounter.increment();
     }
 
+    function _baseURI() internal pure override returns (string memory) {
+        return "https://gateway.pinata.cloud/ipfs/";
+    }
+
     function confirmReservation(
         string memory _firstName,
         string memory _lastName,
@@ -38,7 +43,8 @@ contract Hotel42NFT is ERC721, Ownable {
         string memory _hotelName,
         string memory _checkInDate,
         string memory _checkOutDate,
-        string memory _roomType
+        string memory _roomType,
+        string memory ipfs_hash
     ) public {
         uint256 tokenId = _tokenIdCounter.current();
         HotelReservation memory reservation = HotelReservation({
@@ -50,7 +56,11 @@ contract Hotel42NFT is ERC721, Ownable {
             checkOutDate: _checkOutDate,
             roomType: _roomType
         });
+
+        string memory token_uri = ipfs_hash;
+
         _safeMint(msg.sender, tokenId);
+        _setTokenURI(tokenId, token_uri); //creates mapping of token ID -> baseURI + IPFS hash
         hotelReservationNFTMap[tokenId] = reservation;
         _tokenIdCounter.increment();
     }

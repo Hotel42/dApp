@@ -8,6 +8,7 @@ import {
   Button,
 } from '@chakra-ui/react'
 import {useContracts} from '../contexts';
+import {pin_nft_IPFS} from './ipfs.js';
 
 
 const MintReservationForm = () => {
@@ -99,6 +100,34 @@ const MintReservationForm = () => {
 
       <Button colorScheme="teal" onClick={async () => {
           try {
+
+            let inDate = new Date(checkInDate);
+            inDate = inDate.toISOString();      //inorder to query on date values in IPFS the values must be ISO_8601 format
+
+            let outDate = new Date(checkOutDate);
+            outDate = outDate.toISOString();    
+
+            const NFT_metadata = {      //nft metadata in json format inorder to write to IPFS
+              firstName: firstName,
+              lastName: lastName,
+              email: email,
+              hotelName: hotelName,
+              checkInDate: inDate,
+              checkOutDate: outDate,
+              roomType: roomType,
+              image: 'https://gateway.pinata.cloud/ipfs/QmVXTa57AAeEzLpxLfV2RGcPGa46UxxaRNy1KQcH71btfM',  //using generic image for all NFTs so hardcoded its location on IPFS
+              isSale: 'false'   //parameter used to make sure only NFTs that are on sale can be seen on marketplace
+            };
+
+            const pinata_metadata = {           //everytime we write to IPFS we need to include Pinata metadata so we can query the data later 
+                pinataMetadata: {
+                    keyvalues: NFT_metadata
+                }
+            };
+
+            const ipfs_hash = pin_nft_IPFS(NFT_metadata, pinata_metadata);
+            
+
             const tx = hotel42NftContract.confirmReservation(
               firstName,
               lastName,
@@ -107,6 +136,7 @@ const MintReservationForm = () => {
               checkInDate,
               checkOutDate,
               roomType,
+              ipfs_hash
             );
             await tx.wait();
             console.log('succesfully minted it!');
