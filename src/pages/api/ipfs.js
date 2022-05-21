@@ -1,6 +1,9 @@
-const pinataSDK = require('@pinata/sdk');
-const pinata = pinataSDK(process.env.pinataApiKey, process.env.pinataSecretApiKey);
+import pinataSDK from '@pinata/sdk';
 import fetch from 'node-fetch';
+
+
+const pinata = pinataSDK(process.env.pinataApiKey, process.env.pinataSecretApiKey);
+
 
 //-----------------------IPFS functionality----------------------
 
@@ -8,12 +11,12 @@ const ipfs_base_url = "https://gateway.pinata.cloud/ipfs/";
 
 function changeJSON(jsonObj, key, newValue) {   //updates the key in a JSON object
     for (let i in jsonObj) {
-      if (i == key) {
-        jsonObj[i] = newValue;
-        return;
-      }
+        if (i == key) {
+            jsonObj[i] = newValue;
+            return;
+        }
     }
-  }
+}
 
 
 function update_sale_status_IPFS(nftURL) {           //when user wishes to put their reservation for sale or decides not to sell
@@ -24,7 +27,7 @@ function update_sale_status_IPFS(nftURL) {           //when user wishes to put t
 
         const jsonObj = await response.json();
 
-        if(jsonObj.isSale == 'true'){
+        if (jsonObj.isSale == 'true') {
             changeJSON(jsonObj, 'isSale', 'false');  //change the value of isSale to true
         } else {
             changeJSON(jsonObj, 'isSale', 'true');
@@ -41,29 +44,16 @@ function update_sale_status_IPFS(nftURL) {           //when user wishes to put t
         const result = await pinata.pinJSONToIPFS(jsonObj, pinata_metadata);
 
         //delete old JSON on IPFS
-        const get_old_ipfs_hash = nftURL.substring(nftURL.lastIndexOf('/')+1);
+        const get_old_ipfs_hash = nftURL.substring(nftURL.lastIndexOf('/') + 1);
         const output = await pinata.unpin(get_old_ipfs_hash);
 
         return result.IpfsHash;     //returns hash of the updated nft
-        
+
     } catch (err) {
 
         console.log('could not update sale status of nft:' + err);
     }
-    
-}
 
-
-function pin_nft_IPFS(json_obj, pinata_metadata) {
-
-    try {
-        const result = await pinata.pinJSONToIPFS(json_obj, pinata_metadata);
-
-        return result.IpfsHash;         //returns hash of pinned nft
-
-    } catch (err) {
-        console.error("Content was not pinned", err);
-    }
 }
 
 
@@ -90,14 +80,14 @@ function cleanup_expired_res_IPFS() {           //unpin reservations where check
 
         //console.log("Query successful: ", result.rows);
 
-        for(let i in result.rows){
+        for (let i in result.rows) {
             let pin_hash = result.rows[i].ipfs_pin_hash;
             const output = await pinata.unpin(pin_hash);
             console.log(`unpinned hash ${pin_hash} `, output);
         }
 
     } catch (err) {
-        
+
         console.error("could not cleanup expired reservations: ", err);
     }
 }
@@ -123,7 +113,7 @@ function get_all_nfts_onsale_IPFS() {
     try {
         const result = await pinata.pinList(filters);
 
-        for(let i in result.rows){
+        for (let i in result.rows) {
             let pin_hash = result.rows[i].ipfs_pin_hash;
             let nft_url = ipfs_base_url + pin_hash;         //concatenate ipfs base url with ipfs hash
 
@@ -137,12 +127,12 @@ function get_all_nfts_onsale_IPFS() {
         return sale_nfts;       //array of json objects for each nft on sale
 
     } catch (err) {
-        
+
         console.error("could not get nfts on sale: ", err);
     }
 }
 
-function update_reservation_details_IPFS(nftURL, first, last, email){      //when user clicks to buy a reservation on sale, they must also update reservation details
+function update_reservation_details_IPFS(nftURL, first, last, email) {      //when user clicks to buy a reservation on sale, they must also update reservation details
 
     try {
 
@@ -166,13 +156,30 @@ function update_reservation_details_IPFS(nftURL, first, last, email){      //whe
         const result = await pinata.pinJSONToIPFS(jsonObj, pinata_metadata);
 
         //delete old JSON on IPFS
-        const get_old_ipfs_hash = nftURL.substring(nftURL.lastIndexOf('/')+1);
+        const get_old_ipfs_hash = nftURL.substring(nftURL.lastIndexOf('/') + 1);
         const output = await pinata.unpin(get_old_ipfs_hash);
 
         return result.IpfsHash;     //returns hash of updated json
-        
+
     } catch (err) {
 
         console.log('could not update sale status of nft:' + err);
     }
+}
+
+async function pin_nft_IPFS(json_obj, pinata_metadata) {
+
+    try {
+        const result = await pinata.pinJSONToIPFS(json_obj, pinata_metadata);
+
+        return result.IpfsHash;         //returns hash of pinned nft
+
+    } catch (err) {
+        console.error("Content was not pinned", err);
+    }
+}
+
+export default async function handler(req, res) {
+    const ipfsHash = await pin_nft_IPFS(json_obj, pinata_metadata);
+    return res.status(200).json({ ipfsHash })
 }

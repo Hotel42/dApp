@@ -8,7 +8,9 @@ import {
   Button,
 } from '@chakra-ui/react'
 import {useContracts} from '../contexts';
-import {pin_nft_IPFS} from './ipfs.js';
+
+// TODO: might not work yet
+const fetchIPFS = () => fetch('/api/ipfs').then(res => res.json())
 
 
 const MintReservationForm = () => {
@@ -125,7 +127,7 @@ const MintReservationForm = () => {
                 }
             };
 
-            const ipfs_hash = pin_nft_IPFS(NFT_metadata, pinata_metadata);
+            const ipfs_hash = await fetchIPFS()
             
 
             const tx = hotel42NftContract.confirmReservation(
