@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="76e2f53e-f8d3-4684-977d-8b5d7c59e7f9" name="Changes" comment="setting up foundational repo" />
+    <list default="true" id="76e2f53e-f8d3-4684-977d-8b5d7c59e7f9" name="Changes" comment="setting up foundational repo">
+      <change afterPath="$PROJECT_DIR$/src/components/HotelCard.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/book/[id].jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/profile.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/Hotel42Provider.spec.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/Hotel42NFT.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Hotel42NFT.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/addresses.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/addresses.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ConnectWallet.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ConnectWallet.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MintReservationForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MintReservationForm.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/NavBar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/NavBar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/_app.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/_app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typechain/Hotel42NFT.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typechain/Hotel42NFT.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typechain/factories/Hotel42NFT__factory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typechain/factories/Hotel42NFT__factory.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,9 +51,34 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "nodejs_package_manager_path": "yarn"
+    "nodejs.mocha.mocha_node_package_dir": "/Users/johnnyliaw/node_modules/mocha",
+    "nodejs_package_manager_path": "yarn",
+    "ts.external.directory.path": "/Users/johnnyliaw/Desktop/MyStuff/dApp/node_modules/typescript/lib"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="contractName.Successfully adds hotel" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <mocha-package>$USER_HOME$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options />
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/test/Hotel42Provider.spec.js</test-file>
+      <test-names>
+        <name value="contractName" />
+        <name value="Successfully adds hotel" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Mocha.contractName.Successfully adds hotel" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task id="LOCAL-00001" summary="setting up foundational repo">
@@ -56,6 +95,7 @@
       <option name="presentableId" value="Default" />
       <updated>1652868774482</updated>
       <workItem from="1652868779858" duration="155000" />
+      <workItem from="1653191848966" duration="11666000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
@@ -77,5 +117,17 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="setting up foundational repo" />
     <option name="LAST_COMMIT_MESSAGE" value="setting up foundational repo" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/components/ConnectWallet.jsx</url>
+          <line>31</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

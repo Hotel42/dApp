@@ -19,14 +19,16 @@ const fetchIPFS = (data) => fetch('/api/ipfs', {
 }).then(res => res.json()).catch(err => alert(`IPFS request error: ${err.message}`))
 
 
-const MintReservationForm = () => {
+const MintReservationForm = ({
+  hotelName,
+  roomTypes,
+}) => {
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
-  const [hotelName, setHotelName] = React.useState('');
   const [checkInDate, setCheckInDate] = React.useState('');
   const [checkOutDate, setCheckOutDate] = React.useState('');
-  const [roomType, setRoomType] = React.useState('');
+  const [selectedRoomType, setSelectedRoomType] = React.useState('');
 
   const { hotel42NftContract } = useContracts();
 
@@ -82,28 +84,17 @@ const MintReservationForm = () => {
         </FormControl>
 
         <FormControl isRequired>
-          <FormLabel htmlFor='hotelName'>Hotel name</FormLabel>
-          <Select
-            id='hotelName'
-            placeholder='Select hotel'
-            onChange={(e) => setHotelName(e.target.value)}
-          >
-            <option>Marriot International, Denver, CO</option>
-            <option>Holiday Inn, Denver, CO</option>
-            <option>Landyard Internatioanl Hotel, NY</option>
-          </Select>
-        </FormControl>
-
-        <FormControl isRequired>
           <FormLabel htmlFor='roomType'>Room type</FormLabel>
           <Select
             id='roomType'
             placeholder='Select room type'
-            onChange={(e) => setRoomType(e.target.value)}
+            onChange={(e) => {
+              setSelectedRoomType(e.target.value)
+            }}
           >
-            <option>Ensuite</option>
-            <option>King</option>
-            <option>Single</option>
+            {roomTypes.map(roomType => (
+              <option value={roomType.type}>{roomType.type} - ${roomType.price}</option>
+            ))}
           </Select>
         </FormControl>
 
@@ -116,6 +107,7 @@ const MintReservationForm = () => {
               let outDate = new Date(checkOutDate);
               outDate = outDate.toISOString();    
 
+              // TODO clean this up, this the below needed?
               const NFT_metadata = {      //nft metadata in json format inorder to write to IPFS
                 firstName: firstName,
                 lastName: lastName,
@@ -129,19 +121,12 @@ const MintReservationForm = () => {
 
               const ipfs_hash = await fetchIPFS({ firstName, lastName, email })
 
-              const tx = hotel42NftContract.confirmReservation(
-                firstName,
-                lastName,
-                email,
-                hotelName,
-                checkInDate,
-                checkOutDate,
-                roomType,
-                ipfs_hash
-              );
+              const tx = hotel42NftContract.confirmReservation(ipfs_hash);
               await tx.wait();
+              // TODO add a success dialog
               console.log('succesfully minted it!');
             } catch (e) {
+              // TODO add a failure dialog
               console.log('error confirming reservation: ', e);
             }
         }}>

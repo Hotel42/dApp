@@ -6,7 +6,7 @@ artifacts
 
 # IntelliJ IDE files
 dApp.iml
-workspace.xml
+.idea/workspace.xml
 .idea
 
 # next.js files
