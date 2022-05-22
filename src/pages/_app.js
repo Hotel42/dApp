@@ -5,12 +5,14 @@ import React from "react";
 import {AccountContext, ContractsContext} from '../contexts';
 import addresses from '../addresses.json';
 import Hotel42NFT from '../../artifacts/contracts/Hotel42NFT.sol/Hotel42NFT.json';
+import Hotel42Provider from "../../artifacts/contracts/Hotels42Provider.sol/Hotel42Provider.json";
 import {getCurrentAccount, getEthereumObject, getSignedContract, setupEthereumEventListeners} from '../utils/common';
 
 function App({ Component }) {
   const [account, setAccount] = React.useState(null);
   const [contracts, setContracts] = React.useState({
     hotel42NftContract: null,
+    hotel42Provider: null,
   });
 
   const init = async () => {
@@ -26,10 +28,15 @@ function App({ Component }) {
       Hotel42NFT.abi
     );
 
+    const hotel42NftProvider = getSignedContract(
+      addresses.localhost.hotel42Provider,
+      Hotel42Provider.abi
+    );
+
     if (!hotel42NftContract) return;
 
     const currentAccount = await getCurrentAccount();
-    setContracts({ hotel42NftContract });
+    setContracts({ hotel42NftContract, hotel42NftProvider });
     setAccount(currentAccount);
   };
 
@@ -39,7 +46,7 @@ function App({ Component }) {
 
   return (
     <ContractsContext.Provider value={contracts}>
-      <AccountContext.Provider value={account}>
+      <AccountContext.Provider value={{ address: account, setAddress: (addr) => setAccount(addr) }}>
         <ChakraProvider>
           <NavBar/>
           <Component/>

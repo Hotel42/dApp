@@ -1,19 +1,18 @@
 import React from "react";
-import { useWallet } from '@web3-ui/core';
 import { Button } from '@chakra-ui/react'
+import { useAccount } from "../contexts";
+import { connectWallet } from "../utils/common";
 
 export const ConnectWallet = () => {
-  const { connectWallet, connection, connected, disconnectWallet } = useWallet();
+  const accountContext = useAccount();
   return (
     <Button
       bg="transparent"
+      color="#dba102"
       border="1px"
-      colorScheme="teal"
-      onClick={connected ? disconnectWallet : connectWallet}
+      onClick={accountContext.address ? null : connectWallet}
     >
-      {connected
-        ? connection.ens || trimWalletAddress(connection.userAddress)
-        : 'Connect wallet'}
+      {accountContext.address ? trimWalletAddress(accountContext.address) : 'Connect wallet'}
     </Button>
   );
 }

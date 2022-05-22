@@ -11,6 +11,7 @@ export type { ERC165 } from "./ERC165";
 export type { IERC165 } from "./IERC165";
 export type { Hotel42Marketplace } from "./Hotel42Marketplace";
 export type { Hotel42NFT } from "./Hotel42NFT";
+export type { Hotel42Provider } from "./Hotel42Provider";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
 export { ERC721__factory } from "./factories/ERC721__factory";
@@ -22,3 +23,4 @@ export { ERC165__factory } from "./factories/ERC165__factory";
 export { IERC165__factory } from "./factories/IERC165__factory";
 export { Hotel42Marketplace__factory } from "./factories/Hotel42Marketplace__factory";
 export { Hotel42NFT__factory } from "./factories/Hotel42NFT__factory";
+export { Hotel42Provider__factory } from "./factories/Hotel42Provider__factory";

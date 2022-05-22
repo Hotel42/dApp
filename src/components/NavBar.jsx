@@ -1,15 +1,16 @@
 import React from 'react';
-import { Box, Heading, Flex, Text, Button } from "@chakra-ui/react";
+import { Center, Box, Heading, Flex, Text, Button } from "@chakra-ui/react";
+import { Spacer } from '../components/Spacer';
 import {ConnectWallet} from './ConnectWallet';
 
 const MenuItems = ({ children }) => (
   <Button
     bg="transparent"
-    colorScheme="teal"
+    color="#dba102"
     outline="none"
     _hover={{ bg: 'transparent' }}
   >
-    <Text mt={{ base: 4, md: 0 }} display="block">
+    <Text mt={{ base: 2, md: 0 }} display="block">
       {children}
     </Text>
   </Button>
@@ -26,33 +27,34 @@ const NavBar = (props) => {
       justify="space-between"
       wrap="wrap"
       padding="1.5rem"
-      bg="teal.500"
-      color="white"
+      bg="transparent"
+      color="#dba102"
       {...props}
     >
-      <Flex align="center" mr={5}>
+
+      <Flex>
         <Heading as="h1" size="lg" letterSpacing={"-.1rem"}>
           Hotel42
         </Heading>
+        <Spacer width="30px"/>
+        {/* <MenuItems>
+          Home
+        </MenuItems>
+        <Center>
+          <MenuItems>
+            Marketplace
+          </MenuItems>
+        </Center> */}
       </Flex>
 
-      <Box
-        display={{ sm: show ? "block" : "none", md: "flex" }}
-        width={{ sm: "full", md: "auto" }}
-        alignItems="center"
-        flexGrow={1}
-      >
-        <MenuItems>Book</MenuItems>
-        <MenuItems>Marketplace</MenuItems>
-        <MenuItems>My Trips</MenuItems>
-      </Box>
-
-      <Box
-        display={{ sm: show ? "block" : "none", md: "block" }}
-        mt={{ base: 4, md: 0 }}
-      >
-        {/* <ConnectWallet/> */}
-      </Box>
+      <Flex>
+        <Box
+          display={{ sm: show ? "block" : "none", md: "block" }}
+          mt={{ base: 4, md: 0 }}
+        >
+          <ConnectWallet/>
+        </Box>
+      </Flex>
     </Flex>
   );
 };
