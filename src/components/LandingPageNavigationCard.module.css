@@ -1,0 +1,9 @@
+
+.landingPageNavigationCard {
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.landingPageNavigationCard:hover {
+  transform: scale(1.1);
+}
