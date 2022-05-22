@@ -20,7 +20,7 @@ const fetchIPFS = (data) => fetch('/api/ipfs', {
 
 
 const MintReservationForm = ({
-  hotelName,
+  hotel,
   roomTypes,
 }) => {
   const [firstName, setFirstName] = React.useState('');
@@ -107,21 +107,27 @@ const MintReservationForm = ({
               let outDate = new Date(checkOutDate);
               outDate = outDate.toISOString();    
 
-              // TODO clean this up, this the below needed?
-              const NFT_metadata = {      //nft metadata in json format inorder to write to IPFS
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                hotelName: hotelName,
-                checkInDate: inDate,
-                checkOutDate: outDate,
-                roomType: roomType,
-                image: 'https://gateway.pinata.cloud/ipfs/QmVXTa57AAeEzLpxLfV2RGcPGa46UxxaRNy1KQcH71btfM',  //using generic image for all NFTs so hardcoded its location on IPFS
+              
+              const reservationInfo = {
+                privateReservationInfo: {
+                  firstName,
+                  lastName,
+                  email,
+                },
+                publicReservationInfo: {
+                  ...hotel,
+                  checkInDate: inDate,
+                  checkOutDate: outDate,
+                  roomType: selectedRoomType,
+                  nftAddress: hotel42NftContract.address
+                }
               };
 
-              const ipfs_hash = await fetchIPFS({ firstName, lastName, email })
+              const { ipfs_hash } = await fetchIPFS(reservationInfo)
 
-              const tx = hotel42NftContract.confirmReservation(ipfs_hash);
+
+              const tx = await hotel42NftContract.confirmReservation(ipfs_hash);
+
               await tx.wait();
               // TODO add a success dialog
               console.log('succesfully minted it!');

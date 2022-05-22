@@ -1,12 +1,12 @@
-import {ChakraProvider} from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
 import "focus-visible/dist/focus-visible"
 import React from "react";
-import {AccountContext, ContractsContext} from '../contexts';
+import { AccountContext, ContractsContext } from '../contexts';
 import addresses from '../addresses.json';
 import Hotel42NFT from '../../artifacts/contracts/Hotel42NFT.sol/Hotel42NFT.json';
 import Hotel42Provider from "../../artifacts/contracts/Hotel42Provider.sol/Hotel42Provider.json";
-import {getCurrentAccount, getEthereumObject, getSignedContract, setupEthereumEventListeners} from '../utils/common';
+import { getCurrentAccount, getEthereumObject, getSignedContract, setupEthereumEventListeners } from '../utils/common';
 
 function App({ Component }) {
   const [account, setAccount] = React.useState(null);
@@ -53,8 +53,8 @@ function App({ Component }) {
         setAddress: (addr) => setAccount(addr),
       }}>
         <ChakraProvider>
-          <NavBar/>
-          <Component/>
+          <NavBar />
+          <Component />
         </ChakraProvider>
       </AccountContext.Provider>
     </ContractsContext.Provider>
