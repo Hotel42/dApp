@@ -12,6 +12,11 @@
     "test:report-gas": "REPORT_GAS=true npx hardhat test",
     "test:watch": "echo You need to install 'entr' to run this command && find contracts test lib -iname '*.sol' -o -iname '*.spec.*' -o -iname '*.test.*' -o -iname '*.ts' | entr -cnr npm run test"
   },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  },
   "dependencies": {
     "@chakra-ui/react": "^2.0.0",
     "@emotion/react": "^11",
@@ -24,6 +29,7 @@
     "ethers": "^5.6.6",
     "focus-visible": "^5.2.0",
     "framer-motion": "^6",
+    "fs": "^0.0.1-security",
     "hardhat-contract-sizer": "^2.5.1",
     "magic-sdk": "^8.1.1",
     "next": "12.0.8",

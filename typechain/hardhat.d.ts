@@ -52,6 +52,10 @@ declare module "hardhat/types/runtime" {
       name: "Hotel42NFT",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Hotel42NFT__factory>;
+    getContractFactory(
+      name: "Hotel42Provider",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Hotel42Provider__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -103,6 +107,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Hotel42NFT>;
+    getContractAt(
+      name: "Hotel42Provider",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Hotel42Provider>;
 
     // default types
     getContractFactory(
