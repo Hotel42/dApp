@@ -1,6 +1,6 @@
 {
   "localhost": {
-    "hotel42NftContract": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
-    "hotel42Provider": "something"
+    "hotel42NftContract": "0x851356ae760d987E095750cCeb3bC6014560891C",
+    "hotel42Provider": "0x84ea74d481ee0a5332c457a4d796187f6ba67feb"
   }
 }

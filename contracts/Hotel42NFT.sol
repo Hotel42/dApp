@@ -10,21 +10,18 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract Hotel42NFT is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
-    struct HotelReservation {
-        string firstName;
-        string lastName;
-        string email;
-        string hotelName;
-        string checkInDate;
-        string checkOutDate;
-        string roomType;
-    }
-
-    mapping(uint256 => HotelReservation) hotelReservationNFTMap;
+    // map of addresses to an array of reservation nft Id's
+    // so in the /profile page we can query and view all reservations
+    // belonging to a specific owner
+    mapping(address => uint256[]) ownerToReservations;
 
     Counters.Counter private _tokenIdCounter;
 
     constructor() ERC721("Hotel42", "H42") {}
+
+    /* event to store token ID in FE for each NFT.
+        Reason - each user will have multiple token IDs so when res. needs updating we need to know which token ID to update */
+    event reservationTokenID(uint tokenID);
 
     function safeMint(address to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
@@ -36,46 +33,24 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         return "https://gateway.pinata.cloud/ipfs/";
     }
 
-    /* event to store token ID in FE for each NFT. 
-        Reason - each user will have multiple token IDs so when res. needs updating we need to know which token ID to update */
-    event reservationTokenID(uint tokenID);     
-
-    function confirmReservation(
-        string memory _firstName,
-        string memory _lastName,
-        string memory _email,
-        string memory _hotelName,
-        string memory _checkInDate,
-        string memory _checkOutDate,
-        string memory _roomType,
-        string memory ipfs_hash
-    ) public {
+    function confirmReservation(string memory ipfs_hash) public {
         uint256 tokenId = _tokenIdCounter.current();
-        HotelReservation memory reservation = HotelReservation({
-            firstName: _firstName,
-            lastName: _lastName,
-            email: _email,
-            hotelName: _hotelName,
-            checkInDate: _checkInDate,
-            checkOutDate: _checkOutDate,
-            roomType: _roomType
-        });
 
         string memory token_uri = ipfs_hash;
 
         _safeMint(msg.sender, tokenId);
         _setTokenURI(tokenId, token_uri); //creates mapping of token ID -> baseURI + IPFS hash
-        hotelReservationNFTMap[tokenId] = reservation;
+        ownerToReservations[msg.sender].push(tokenId);
         _tokenIdCounter.increment();
 
         emit reservationTokenID(tokenId);
     }
 
     function updateReservation(uint256 tokenID, string memory _firstName, string memory _lastName, string memory _email) public {
+        // TODO (aaftab), I think we want to update IPFS here
+    }
 
-        HotelReservation storage reservation = hotelReservationNFTMap[tokenID];
-        reservation.firstName = _firstName;
-        reservation.lastName = _lastName;
-        reservation.email = _email;
+    function getReservationsByOwner() public view returns (uint256[] memory) {
+        return ownerToReservations[msg.sender];
     }
 }
