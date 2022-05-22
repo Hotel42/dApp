@@ -36,6 +36,10 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         return "https://gateway.pinata.cloud/ipfs/";
     }
 
+    /* event to store token ID in FE for each NFT. 
+        Reason - each user will have multiple token IDs so when res. needs updating we need to know which token ID to update */
+    event reservationTokenID(uint tokenID);     
+
     function confirmReservation(
         string memory _firstName,
         string memory _lastName,
@@ -63,5 +67,15 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         _setTokenURI(tokenId, token_uri); //creates mapping of token ID -> baseURI + IPFS hash
         hotelReservationNFTMap[tokenId] = reservation;
         _tokenIdCounter.increment();
+
+        emit reservationTokenID(tokenId);
+    }
+
+    function updateReservation(uint256 tokenID, string memory _firstName, string memory _lastName, string memory _email) public {
+
+        HotelReservation storage reservation = hotelReservationNFTMap[tokenID];
+        reservation.firstName = _firstName;
+        reservation.lastName = _lastName;
+        reservation.email = _email;
     }
 }
