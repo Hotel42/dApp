@@ -1,12 +1,13 @@
 import { pin_nft_IPFS } from '../../pinata-client';
 
 export default async function handler(req, res) {
-    const { firstName, lastName, email, previousNFTipfsHash } = req.body
+    const { privateReservationInfo, publicReservationInfo, previousNFTipfsHash } = req.body
+
     if (req.method === 'POST') {
         try {
-            const ipfsHash = await pin_nft_IPFS({ firstName, lastName, email }, previousNFTipfsHash);
+            const ipfs_hash = await pin_nft_IPFS(privateReservationInfo, publicReservationInfo, previousNFTipfsHash);
 
-            return res.json({ ipfsHash })
+            return res.json({ ipfs_hash })
         } catch (err) {
             console.error(err)
 

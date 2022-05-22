@@ -28,7 +28,8 @@ export default function BookWithHotelPage() {
           state: tx2[2],
           stars: tx2[3].toNumber(),
           imageUrl: tx2[4],
-          id: tx2[5].toNumber(),
+          canonicalHotelId: tx2[5].toNumber(),
+          canonicalHotelAddress: hotel42Provider.address
       }
       setHotel(hotel);
       console.log(hotel)
@@ -37,7 +38,7 @@ export default function BookWithHotelPage() {
 
   React.useEffect(() => {
     if (hotel42Provider && accountContext.address) {
-      fetch();
+      fetch(hotel42Provider);
     }
   }, [hotel42Provider, accountContext.address]);
 
@@ -45,7 +46,7 @@ export default function BookWithHotelPage() {
     <div>
       <Heading>Book</Heading>
       {hotel && roomTypes && (
-        <MintReservationForm hotelName={hotel.hotelName} roomTypes={roomTypes}/>
+        <MintReservationForm hotel={hotel} roomTypes={roomTypes}/>
       )}
     </div>
   );

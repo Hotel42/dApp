@@ -1,6 +1,6 @@
 import React from "react";
 import { VStack, Center, Box, Heading, Flex, Text, Button } from "@chakra-ui/react";
-import {useAccount, useContracts} from "../contexts";
+import { useAccount, useContracts } from "../contexts";
 import { HotelCard } from "../components/HotelCard";
 
 export default function BookingPage() {
@@ -9,7 +9,10 @@ export default function BookingPage() {
   const { hotel42Provider } = useContracts();
 
   const fetch = async () => {
-    const tx = await hotel42Provider.getAllHotels();
+    const tx = await hotel42Provider.getAllHotels().catch(err => {
+      console.log('err', err)
+      throw err;
+    });
     const hotels = tx.map(hotel => {
       return {
         hotelName: hotel[0],
@@ -21,7 +24,6 @@ export default function BookingPage() {
       }
     });
     setHotels(hotels);
-    console.log(hotels);
   }
 
   React.useEffect(() => {
