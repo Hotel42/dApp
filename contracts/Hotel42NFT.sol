@@ -21,7 +21,7 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
 
     /* event to store token ID in FE for each NFT.
         Reason - each user will have multiple token IDs so when res. needs updating we need to know which token ID to update */
-    event reservationTokenID(uint tokenID);
+    event reservationTokenID(uint256 tokenID);
 
     function safeMint(address to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
@@ -46,11 +46,24 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         emit reservationTokenID(tokenId);
     }
 
-    function updateReservation(uint256 tokenID, string memory _firstName, string memory _lastName, string memory _email) public {
-        // TODO (aaftab), I think we want to update IPFS here
-    }
+    // function updateReservation(
+    //     uint256 tokenID,
+    //     string memory _firstName,
+    //     string memory _lastName,
+    //     string memory _email
+    // ) public {
+    //     // TODO (aaftab), I think we want to update IPFS here
+    // }
 
     function getReservationsByOwner() public view returns (uint256[] memory) {
         return ownerToReservations[msg.sender];
+    }
+
+    function purchaseBooking(
+        address payable hotel,
+        uint256 price //function is declared as payable so that funds are reverted if transaction fails
+    ) public payable {
+        require(msg.value >= price, "buyer has insufficient funds");
+        hotel.transfer(msg.value);
     }
 }
