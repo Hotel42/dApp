@@ -10,9 +10,9 @@ export default async function handler(req, res) {
         } catch (err) {
             console.error(err)
 
-            return res.sendStatus(500);
+            return res.status(500).end();
         }
     } else {
-        return res.sendStatus(404);
+        return res.status(404).end();
     }
 }
