@@ -30,7 +30,7 @@ const MintReservationForm = ({
   const [checkOutDate, setCheckOutDate] = React.useState('');
   const [selectedRoomType, setSelectedRoomType] = React.useState('');
 
-  const { hotel42NftContract } = useContracts();
+  const { hotel42NftContract, hotel42Provider } = useContracts();
 
   return (
     <Center>
@@ -126,7 +126,7 @@ const MintReservationForm = ({
               const { ipfs_hash } = await fetchIPFS(reservationInfo)
 
 
-              const tx = await hotel42NftContract.confirmReservation(ipfs_hash);
+              const tx = await hotel42NftContract.confirmReservation(ipfs_hash, hotel42Provider.address, hotel.canonicalHotelId);
 
               await tx.wait();
               // TODO add a success dialog

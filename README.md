@@ -1,5 +1,10 @@
 # Hotel42 dApp
 
+## How to quickly build contract
+1. run `npx hardhat node` in the root directory to start local node
+2. run `yarn hh:deploy:localhost` to deploy contracts and auto update addresses
+3. run `yarn dev` to start dApp
+
 ## How to run the app
 1. Install hardhat locally
 2. run `yarn install`

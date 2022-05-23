@@ -2,6 +2,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { Ownable } from "./Ownable";
+export type { ERC20 } from "./ERC20";
+export type { IERC20Metadata } from "./IERC20Metadata";
+export type { IERC20 } from "./IERC20";
 export type { ERC721 } from "./ERC721";
 export type { ERC721URIStorage } from "./ERC721URIStorage";
 export type { IERC721Metadata } from "./IERC721Metadata";
@@ -12,8 +15,13 @@ export type { IERC165 } from "./IERC165";
 export type { Hotel42Marketplace } from "./Hotel42Marketplace";
 export type { Hotel42NFT } from "./Hotel42NFT";
 export type { Hotel42Provider } from "./Hotel42Provider";
+export type { IH42P } from "./IH42P";
+export type { MockUSDC } from "./MockUSDC";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
+export { ERC20__factory } from "./factories/ERC20__factory";
+export { IERC20Metadata__factory } from "./factories/IERC20Metadata__factory";
+export { IERC20__factory } from "./factories/IERC20__factory";
 export { ERC721__factory } from "./factories/ERC721__factory";
 export { ERC721URIStorage__factory } from "./factories/ERC721URIStorage__factory";
 export { IERC721Metadata__factory } from "./factories/IERC721Metadata__factory";
@@ -24,3 +32,5 @@ export { IERC165__factory } from "./factories/IERC165__factory";
 export { Hotel42Marketplace__factory } from "./factories/Hotel42Marketplace__factory";
 export { Hotel42NFT__factory } from "./factories/Hotel42NFT__factory";
 export { Hotel42Provider__factory } from "./factories/Hotel42Provider__factory";
+export { IH42P__factory } from "./factories/IH42P__factory";
+export { MockUSDC__factory } from "./factories/MockUSDC__factory";

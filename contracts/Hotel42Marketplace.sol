@@ -4,12 +4,18 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol"; // TODO: might need to change if this changes in hotel42NFT.sol
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // import "@openzeppelin/contracts/security/ReentrancyGuard.sol"; TODO: this is probably needed
 
 contract Hotel42Marketplace is Ownable {
     using Counters for Counters.Counter;
 
+    address usdcAddress;
     Counters.Counter private _marketListingCounter;
+
+    constructor(address _usdcAddress) {
+        usdcAddress = _usdcAddress;
+    }
 
     struct MarketListing {
         address payable seller;
@@ -61,11 +67,10 @@ contract Hotel42Marketplace is Ownable {
         ERC721Reference memory nftReference = marketItemReference[_marketListingId];
         MarketListing memory listing = listingsByContract[nftReference.nftContract][nftReference.tokenId];
         requireApproval(nftReference.nftContract, nftReference.tokenId);
-        require(msg.value >= listing.price, "Value does not meet asking price");
-
-        // TODO: send payment to seller and add payment tests!
-
+        
+        IERC20(usdcAddress).transferFrom(msg.sender, listing.seller, listing.price);
         IERC721(nftReference.nftContract).transferFrom(listing.seller, msg.sender, nftReference.tokenId);
+
         emit MarketItemSold(_marketListingId, nftReference.nftContract, nftReference.tokenId);
         removeMarketItem(_marketListingId, nftReference.nftContract, nftReference.tokenId);
     }

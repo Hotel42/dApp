@@ -23,7 +23,7 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "confirmReservation(string)": FunctionFragment;
+    "confirmReservation(string,address,uint256,uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getReservationsByOwner()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
@@ -49,7 +49,7 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
     functionFragment: "confirmReservation",
-    values: [string]
+    values: [string, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getApproved",
@@ -254,6 +254,9 @@ export class Hotel42NFT extends BaseContract {
 
     confirmReservation(
       ipfs_hash: string,
+      _hotelContract: string,
+      _hotelId: BigNumberish,
+      _roomTypeId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -352,6 +355,9 @@ export class Hotel42NFT extends BaseContract {
 
   confirmReservation(
     ipfs_hash: string,
+    _hotelContract: string,
+    _hotelId: BigNumberish,
+    _roomTypeId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -444,6 +450,9 @@ export class Hotel42NFT extends BaseContract {
 
     confirmReservation(
       ipfs_hash: string,
+      _hotelContract: string,
+      _hotelId: BigNumberish,
+      _roomTypeId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -612,6 +621,9 @@ export class Hotel42NFT extends BaseContract {
 
     confirmReservation(
       ipfs_hash: string,
+      _hotelContract: string,
+      _hotelId: BigNumberish,
+      _roomTypeId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -714,6 +726,9 @@ export class Hotel42NFT extends BaseContract {
 
     confirmReservation(
       ipfs_hash: string,
+      _hotelContract: string,
+      _hotelId: BigNumberish,
+      _roomTypeId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
