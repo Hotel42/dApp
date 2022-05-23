@@ -10,7 +10,7 @@ const { ethers } = hre;
 const baseAmount = ethers.BigNumber.from("1000000000000000000")
 const mockUSDCconstructorArgs = [baseAmount.mul(ethers.BigNumber.from("1000000000"))]
 
-const numAccounts = 1;
+const numAccounts = 2;
 const amount = 100000;
 
 async function spreadTheWealth(mockUSDCContract) {

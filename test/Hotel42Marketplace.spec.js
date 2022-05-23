@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const { doFreshDeploy, deployAndMint, mintNft, getFirstEventArgs } = require('./test-helpers');
+const { doFreshDeploy, deployAndMint, getFirstEventArgs, MockUSDC } = require('./test-helpers');
 const { hotel42NFTContractName } = require('./Hotel42NFT.spec');
 
 const contractName = "Hotel42Marketplace"
@@ -27,149 +27,161 @@ const listMarketItem = async ({ nftOwner, hotel42NFT, hotel42Marketplace, listin
 }
 
 describe(contractName, function async() {
-    it("Should set the right owner", async function () {
-        const hotel42Marketplace = await doFreshDeploy(contractName);
-        const [owner] = await ethers.getSigners();
-        expect(await hotel42Marketplace.owner()).to.equal(owner.address);
+    let mockUSDCcontract;
+    let deployArgs;
+    let hotel42Marketplace;
+    const baseAmount = ethers.BigNumber.from("1000000000000000000")
+
+    beforeEach(async function () {
+        let mockUSDCdeploy = await ethers.getContractFactory(MockUSDC);
+
+        mockUSDCcontract = await mockUSDCdeploy.deploy(baseAmount.mul(ethers.BigNumber.from("1000000000")));
+        deployArgs = [mockUSDCcontract.address]
+
+        hotel42Marketplace = await doFreshDeploy(contractName, deployArgs);
     });
 
-    it("Should require approval before listing item", async function () {
-        const hotel42Marketplace = await doFreshDeploy(contractName);
-
-        const { nftContract: hotel42NFT, nftOwner, mintResult } = await deployAndMint(hotel42NFTContractName);
-
-        await expect(hotel42Marketplace.connect(nftOwner).createMarketItem(hotel42NFT.address, mintResult.value.toNumber(), 0)
-        ).to.be.revertedWith(approvalRevertErrorMsg);
+    describe("ownership", () => {
+        it("Should set the right owner", async function () {
+            const [owner] = await ethers.getSigners();
+            expect(await hotel42Marketplace.owner()).to.equal(owner.address);
+        });
     });
 
-    it("nft owner can list item in market", async function () {
-        const hotel42Marketplace = await doFreshDeploy(contractName);
+    describe("marketplace functionality", () => {
+        let deployAndMintResults;
 
-        const { nftContract: hotel42NFT, nftOwner, mintResult } = await deployAndMint(hotel42NFTContractName);
+        beforeEach(async () => {
+            deployAndMintResults = await deployAndMint(hotel42NFTContractName, deployArgs);
+        })
 
-        await mintResult.wait()
-        const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
-        const listingPrice = 1000000
+        it("Should require approval before listing item", async function () {
+            const { nftContract: hotel42NFT, nftOwner, mintResult } = deployAndMintResults;
 
-        const { createTransaction, nftContract, tokenId, seller, price } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
+            await expect(hotel42Marketplace.connect(nftOwner).createMarketItem(hotel42NFT.address, mintResult.value.toNumber(), 0)
+            ).to.be.revertedWith(approvalRevertErrorMsg);
+        });
 
-        await expect(createTransaction
-        ).to.emit(hotel42Marketplace, "MarketItemCreated").withArgs(0, hotel42NFT.address, mintTokenId);
+        it("nft owner can list item in market", async function () {
+            const { nftContract: hotel42NFT, nftOwner, mintResult } = deployAndMintResults;
 
-        expect(hotel42NFT.address).to.equal(nftContract);
-        expect(mintTokenId.eq(tokenId)).to.be.true
-        expect(seller).to.equal(nftOwner.address);
-        expect(price.toNumber()).to.equal(listingPrice);
-    });
+            await mintResult.wait()
+            const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
+            const listingPrice = 1000
+
+            const { createTransaction, nftContract, tokenId, seller, price } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
+
+            await expect(createTransaction
+            ).to.emit(hotel42Marketplace, "MarketItemCreated").withArgs(0, hotel42NFT.address, mintTokenId);
+
+            expect(hotel42NFT.address).to.equal(nftContract);
+            expect(mintTokenId.eq(tokenId)).to.be.true
+            expect(seller).to.equal(nftOwner.address);
+            expect(price.toNumber()).to.equal(listingPrice);
+        });
 
 
-    it("only the listing owner can delist", async function () {
-        const hotel42Marketplace = await doFreshDeploy(contractName);
+        it("only the listing owner can delist", async function () {
+            const { nftContract: hotel42NFT, nftOwner, mintResult } = deployAndMintResults;
 
-        const { nftContract: hotel42NFT, nftOwner, mintResult } = await deployAndMint(hotel42NFTContractName);
+            await mintResult.wait()
+            const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
+            const listingPrice = 1000
 
-        await mintResult.wait()
-        const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
-        const listingPrice = 1000000
+            const { marketListingId } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
 
-        const { marketListingId } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
+            const [, , stranger] = await ethers.getSigners();
 
-        const [, , stranger] = await ethers.getSigners();
+            await expect(hotel42Marketplace.connect(stranger).deleteMarketListing(marketListingId)
+            ).to.be.revertedWith("VM Exception while processing transaction: reverted with reason string 'Only original lister can delist a market item'");
+        });
 
-        await expect(hotel42Marketplace.connect(stranger).deleteMarketListing(marketListingId)
-        ).to.be.revertedWith("VM Exception while processing transaction: reverted with reason string 'Only original lister can delist a market item'");
-    });
+        it("owner can delist an item", async function () {
+            const { nftContract: hotel42NFT, nftOwner, mintResult } = deployAndMintResults;
 
-    it("owner can delist an item", async function () {
-        const hotel42Marketplace = await doFreshDeploy(contractName);
+            await mintResult.wait()
+            const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
+            const listingPrice = 1000
 
-        const { nftContract: hotel42NFT, nftOwner, mintResult } = await deployAndMint(hotel42NFTContractName);
+            const { marketListingId } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
 
-        await mintResult.wait()
-        const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
-        const listingPrice = 1000000
+            const deleteTransaction = hotel42Marketplace.connect(nftOwner).deleteMarketListing(marketListingId)
+            await expect(deleteTransaction
+            ).to.emit(hotel42Marketplace, "MarketItemDeleted").withArgs(marketListingId, hotel42NFT.address, mintTokenId);
 
-        const { marketListingId } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
+            const { nftContract, tokenId } = await hotel42Marketplace.marketItemReference(marketListingId.toNumber())
 
-        const deleteTransaction = hotel42Marketplace.connect(nftOwner).deleteMarketListing(marketListingId)
-        await expect(deleteTransaction
-        ).to.emit(hotel42Marketplace, "MarketItemDeleted").withArgs(marketListingId, hotel42NFT.address, mintTokenId);
+            expect(nftContract).to.equal(zeroAddress);
+            expect(tokenId.toNumber()).to.equal(0);
 
-        const { nftContract, tokenId } = await hotel42Marketplace.marketItemReference(marketListingId.toNumber())
+            const { seller, price } = await hotel42Marketplace.listingsByContract(hotel42NFT.address, mintTokenId)
 
-        expect(nftContract).to.equal(zeroAddress);
-        expect(tokenId.toNumber()).to.equal(0);
+            expect(seller).to.equal(zeroAddress);
+            expect(price.toNumber()).to.equal(0);
+        });
 
-        const { seller, price } = await hotel42Marketplace.listingsByContract(hotel42NFT.address, mintTokenId)
+        it("item that no longer has approval cannot be sold", async function () {
+            const { nftContract: hotel42NFT, nftOwner, mintResult } = deployAndMintResults;
 
-        expect(seller).to.equal(zeroAddress);
-        expect(price.toNumber()).to.equal(0);
-    });
+            await mintResult.wait()
+            const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
+            const listingPrice = 1000
 
-    it("item that no longer has approval cannot be sold", async function () {
-        const hotel42Marketplace = await doFreshDeploy(contractName);
+            const { marketListingId } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
 
-        const { nftContract: hotel42NFT, nftOwner, mintResult } = await deployAndMint(hotel42NFTContractName);
+            hotel42NFT.connect(nftOwner).approve(zeroAddress, mintTokenId);
 
-        await mintResult.wait()
-        const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
-        const listingPrice = 1000000
+            const [, , purchaser] = await ethers.getSigners();
 
-        const { marketListingId } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
+            await expect(hotel42Marketplace.connect(purchaser).purchaseMarketItem(marketListingId)
+            ).to.be.revertedWith(approvalRevertErrorMsg);
+        });
 
-        hotel42NFT.connect(nftOwner).approve(zeroAddress, mintTokenId);
+        it("item that no does not meet asking price cannot be sold", async function () {
+            const { nftContract: hotel42NFT, nftOwner, mintResult } = deployAndMintResults;
 
-        const [, , purchaser] = await ethers.getSigners();
+            await mintResult.wait()
+            const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
+            const listingPrice = 1000
 
-        await expect(hotel42Marketplace.connect(purchaser).purchaseMarketItem(marketListingId)
-        ).to.be.revertedWith(approvalRevertErrorMsg);
-    });
+            const { marketListingId } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
 
-    it("item that no does not meet asking price cannot be sold", async function () {
-        const hotel42Marketplace = await doFreshDeploy(contractName);
+            const [, , purchaser] = await ethers.getSigners();
 
-        const { nftContract: hotel42NFT, nftOwner, mintResult } = await deployAndMint(hotel42NFTContractName);
+            await expect(hotel42Marketplace.connect(purchaser).purchaseMarketItem(marketListingId)
+            ).to.be.revertedWith("VM Exception while processing transaction: reverted with reason string 'ERC20: insufficient allowance'");
+        });
 
-        await mintResult.wait()
-        const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
-        const listingPrice = 1000000
+        it("item can be sold", async function () {
+            const { nftContract: hotel42NFT, nftOwner, mintResult } = deployAndMintResults;
 
-        const { marketListingId } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
+            await mintResult.wait()
+            const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
+            const listingPrice = 1000
 
-        const [, , purchaser] = await ethers.getSigners();
+            const { marketListingId } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
 
-        await expect(hotel42Marketplace.connect(purchaser).purchaseMarketItem(marketListingId)
-        ).to.be.revertedWith("VM Exception while processing transaction: reverted with reason string 'Value does not meet asking price'");
-    });
+            const [owner, , purchaser] = await ethers.getSigners();
 
-    it("item can be sold", async function () {
-        const hotel42Marketplace = await doFreshDeploy(contractName);
+            await mockUSDCcontract.connect(owner).transfer(purchaser.address, ethers.BigNumber.from(listingPrice + 100));
+            await mockUSDCcontract.connect(purchaser).approve(hotel42Marketplace.address, listingPrice);
 
-        const { nftContract: hotel42NFT, nftOwner, mintResult } = await deployAndMint(hotel42NFTContractName);
+            await expect(hotel42Marketplace.connect(purchaser).purchaseMarketItem(marketListingId, { value: listingPrice })
+            ).to.emit(hotel42Marketplace, "MarketItemSold").withArgs(marketListingId, hotel42NFT.address, mintTokenId);
 
-        await mintResult.wait()
-        const { tokenId: mintTokenId } = await hotel42NFT.queryFilter('Transfer').then(getFirstEventArgs);
-        const listingPrice = 1000000
+            const trueNftOwner = await hotel42NFT.connect(nftOwner).ownerOf(mintTokenId);
 
-        const { marketListingId } = await listMarketItem({ nftOwner, hotel42NFT, hotel42Marketplace, listingPrice, mintTokenId });
+            expect(trueNftOwner).to.equal(purchaser.address);
 
-        const [, , purchaser] = await ethers.getSigners();
+            const { nftContract, tokenId } = await hotel42Marketplace.marketItemReference(marketListingId.toNumber())
 
-        await expect(hotel42Marketplace.connect(purchaser).purchaseMarketItem(marketListingId, { value: listingPrice })
-        ).to.emit(hotel42Marketplace, "MarketItemSold").withArgs(marketListingId, hotel42NFT.address, mintTokenId);
+            expect(nftContract).to.equal(zeroAddress);
+            expect(tokenId.toNumber()).to.equal(0);
 
-        const trueNftOwner = await hotel42NFT.connect(nftOwner).ownerOf(mintTokenId);
+            const { seller, price } = await hotel42Marketplace.listingsByContract(hotel42NFT.address, mintTokenId)
 
-        expect(trueNftOwner).to.equal(purchaser.address);
-
-        const { nftContract, tokenId } = await hotel42Marketplace.marketItemReference(marketListingId.toNumber())
-
-        expect(nftContract).to.equal(zeroAddress);
-        expect(tokenId.toNumber()).to.equal(0);
-
-        const { seller, price } = await hotel42Marketplace.listingsByContract(hotel42NFT.address, mintTokenId)
-
-        expect(seller).to.equal(zeroAddress);
-        expect(price.toNumber()).to.equal(0);
+            expect(seller).to.equal(zeroAddress);
+            expect(price.toNumber()).to.equal(0);
+        });
     });
 });
