@@ -55,9 +55,14 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         emit ReservationMinted(tokenId, _hotelContract, _hotelId);
     }
 
-    function updateReservation(uint256 tokenID, string memory _firstName, string memory _lastName, string memory _email) public {
-        // TODO (aaftab), I think we want to update IPFS here
-    }
+    // function updateReservation(
+    //     uint256 tokenID,
+    //     string memory _firstName,
+    //     string memory _lastName,
+    //     string memory _email
+    // ) public {
+    //     // TODO (aaftab), I think we want to update IPFS here
+    // }
 
     function getReservationsByOwner() public view returns (uint256[] memory) {
         return ownerToReservations[msg.sender];
