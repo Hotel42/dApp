@@ -10,11 +10,10 @@ const { readFileSync, writeFileSync } = require('fs')
 const { mockUSDCconstructorArgs, onComplete: usdcComplete } = require('./deployMockUSDC');
 const { onComplete: providerComplete } = require('./deployHotel42Provider')
 
-const contractConfig = [
-    { name: "Hotel42NFT", configName: "hotel42NftContract" },
+const contractConfig = usdcAddress => [
+    { name: "Hotel42NFT", configName: "hotel42NftContract", constructorArgs: [usdcAddress] },
     { name: "Hotel42Provider", onComplete: providerComplete },
-    { name: "MockUSDC", constructorArgs: mockUSDCconstructorArgs, onComplete: usdcComplete },
-    { name: "Hotel42Marketplace" }
+    { name: "Hotel42Marketplace", constructorArgs: [usdcAddress] }
 ];
 
 async function deployContract({ name, configName, constructorArgs = [], onComplete = async () => ({}) }) {
@@ -35,14 +34,15 @@ async function deployContract({ name, configName, constructorArgs = [], onComple
 
     await onComplete(contract);
 
-    return { [camelCase(configName || name)]: contract.address }
+    return { config: { [camelCase(configName || name)]: contract.address }, contract }
 }
 
 (async function () {
-    const newConfigsArray = await Promise.all(contractConfig.map(deployContract))
+    const { config: usdcConfig, contract: mockUSDC } = await deployContract({ name: "MockUSDC", constructorArgs: mockUSDCconstructorArgs, onComplete: usdcComplete })
+    const newConfigsArray = await Promise.all(contractConfig(mockUSDC.address).map(deployContract))
     const newConfig = newConfigsArray.reduce((acc, configObj) => {
-        return { ...acc, ...configObj }
-    }, {})
+        return { ...acc, ...configObj.config }
+    }, { ...usdcConfig })
 
     const addresses = JSON.parse(readFileSync('./src/addresses.json'));
 
