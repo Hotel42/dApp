@@ -28,7 +28,7 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
 
     /* event to store token ID in FE for each NFT.
         Reason - each user will have multiple token IDs so when res. needs updating we need to know which token ID to update */
-    event reservationTokenID(uint tokenID);
+    event ReservationMinted(uint indexed tokenID, address indexed hotelContract, uint256 indexed hotelId);
 
     function safeMint(address to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
@@ -52,7 +52,7 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         ownerToReservations[msg.sender].push(tokenId);
         _tokenIdCounter.increment();
 
-        emit reservationTokenID(tokenId);
+        emit ReservationMinted(tokenId, _hotelContract, _hotelId);
     }
 
     function updateReservation(uint256 tokenID, string memory _firstName, string memory _lastName, string memory _email) public {

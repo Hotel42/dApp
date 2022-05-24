@@ -161,15 +161,15 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "ReservationMinted(uint256,address,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
-    "reservationTokenID(uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ReservationMinted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "reservationTokenID"): EventFragment;
 }
 
 export type ApprovalEvent = TypedEvent<
@@ -192,12 +192,16 @@ export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
 >;
 
-export type TransferEvent = TypedEvent<
-  [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
+export type ReservationMintedEvent = TypedEvent<
+  [BigNumber, string, BigNumber] & {
+    tokenID: BigNumber;
+    hotelContract: string;
+    hotelId: BigNumber;
+  }
 >;
 
-export type reservationTokenIDEvent = TypedEvent<
-  [BigNumber] & { tokenID: BigNumber }
+export type TransferEvent = TypedEvent<
+  [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
 >;
 
 export class Hotel42NFT extends BaseContract {
@@ -583,6 +587,24 @@ export class Hotel42NFT extends BaseContract {
       { previousOwner: string; newOwner: string }
     >;
 
+    "ReservationMinted(uint256,address,uint256)"(
+      tokenID?: BigNumberish | null,
+      hotelContract?: string | null,
+      hotelId?: BigNumberish | null
+    ): TypedEventFilter<
+      [BigNumber, string, BigNumber],
+      { tokenID: BigNumber; hotelContract: string; hotelId: BigNumber }
+    >;
+
+    ReservationMinted(
+      tokenID?: BigNumberish | null,
+      hotelContract?: string | null,
+      hotelId?: BigNumberish | null
+    ): TypedEventFilter<
+      [BigNumber, string, BigNumber],
+      { tokenID: BigNumber; hotelContract: string; hotelId: BigNumber }
+    >;
+
     "Transfer(address,address,uint256)"(
       from?: string | null,
       to?: string | null,
@@ -600,14 +622,6 @@ export class Hotel42NFT extends BaseContract {
       [string, string, BigNumber],
       { from: string; to: string; tokenId: BigNumber }
     >;
-
-    "reservationTokenID(uint256)"(
-      tokenID?: null
-    ): TypedEventFilter<[BigNumber], { tokenID: BigNumber }>;
-
-    reservationTokenID(
-      tokenID?: null
-    ): TypedEventFilter<[BigNumber], { tokenID: BigNumber }>;
   };
 
   estimateGas: {
