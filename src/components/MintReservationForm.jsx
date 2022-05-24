@@ -58,12 +58,18 @@ const MintReservationForm = ({
         }
       };
 
-      const { ipfs_hash } = await fetchIPFS(reservationInfo)
+      const { ipfs_hash } = await fetchIPFS(reservationInfo);
 
 
-      const tx = await hotel42NftContract.confirmReservation(ipfs_hash, hotel42Provider.address, hotel.canonicalHotelId, selectedRoomType);
+      const tx = await hotel42NftContract.confirmReservation(hotel42Provider.address, hotel.canonicalHotelId, selectedRoomType, inDate, outDate);
 
       await tx.wait();
+
+      //call setTokenURI function to create mapping from tokenID to ipfs hash
+      //const tx2 = await hotel42NftContract.settingTokenURI(ipfs_hash);
+
+      //await tx2.wait();
+      
       // TODO add a success dialog
       console.log('succesfully minted it!');
     } catch (e) {

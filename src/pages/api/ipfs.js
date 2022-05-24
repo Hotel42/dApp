@@ -1,4 +1,6 @@
 import { pin_nft_IPFS } from '../../pinata-client';
+// const hre = require("hardhat");
+// const { ethers } = hre;
 
 export default async function handler(req, res) {
     const { privateReservationInfo, publicReservationInfo, previousNFTipfsHash } = req.body

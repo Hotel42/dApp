@@ -32,7 +32,7 @@ const parseMetadata = (reservationInfo, privateDataIFPSpin) => {
     }
 }
 
-const ipfs_base_url = "https://gateway.pinata.cloud/ipfs/";
+const ipfs_base_url = "ipfs.io/ipfs/";
 
 const pinToIPFS = async (nftMetadata, pinataKeyvalues) => {
     const result = await pinata.pinJSONToIPFS(nftMetadata, {
