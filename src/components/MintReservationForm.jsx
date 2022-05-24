@@ -9,6 +9,7 @@ import {
   Center
 } from '@chakra-ui/react'
 import {useContracts} from '../contexts';
+import {constants} from 'ethers'
 
 const fetchIPFS = (data) => fetch('/api/ipfs', {
   method: 'POST',
@@ -30,7 +31,46 @@ const MintReservationForm = ({
   const [checkOutDate, setCheckOutDate] = React.useState('');
   const [selectedRoomType, setSelectedRoomType] = React.useState('');
 
-  const { hotel42NftContract, hotel42Provider } = useContracts();
+  const { hotel42NftContract, hotel42Provider, usdc } = useContracts();
+
+  const confirmReservation = async () => {
+    try {
+
+      let inDate = new Date(checkInDate);
+      inDate = inDate.toISOString();      //inorder to query on date values in IPFS the values must be ISO_8601 format
+
+      let outDate = new Date(checkOutDate);
+      outDate = outDate.toISOString();    
+
+      
+      const reservationInfo = {
+        privateReservationInfo: {
+          firstName,
+          lastName,
+          email,
+        },
+        publicReservationInfo: {
+          ...hotel,
+          checkInDate: inDate,
+          checkOutDate: outDate,
+          roomType: selectedRoomType,
+          nftAddress: hotel42NftContract.address
+        }
+      };
+
+      const { ipfs_hash } = await fetchIPFS(reservationInfo)
+
+
+      const tx = await hotel42NftContract.confirmReservation(ipfs_hash, hotel42Provider.address, hotel.canonicalHotelId, selectedRoomType);
+
+      await tx.wait();
+      // TODO add a success dialog
+      console.log('succesfully minted it!');
+    } catch (e) {
+      // TODO add a failure dialog
+      console.log('error confirming reservation: ', e);
+    }
+  }
 
   return (
     <Center>
@@ -93,49 +133,14 @@ const MintReservationForm = ({
             }}
           >
             {roomTypes.map(roomType => (
-              <option value={roomType.type}>{roomType.type} - ${roomType.price}</option>
+              <option key={roomType.id} value={roomType.id}>{roomType.type} - ${roomType.price}</option>
             ))}
           </Select>
         </FormControl>
 
-        <Button colorScheme="teal" onClick={async () => {
-            try {
-
-              let inDate = new Date(checkInDate);
-              inDate = inDate.toISOString();      //inorder to query on date values in IPFS the values must be ISO_8601 format
-
-              let outDate = new Date(checkOutDate);
-              outDate = outDate.toISOString();    
-
-              
-              const reservationInfo = {
-                privateReservationInfo: {
-                  firstName,
-                  lastName,
-                  email,
-                },
-                publicReservationInfo: {
-                  ...hotel,
-                  checkInDate: inDate,
-                  checkOutDate: outDate,
-                  roomType: selectedRoomType,
-                  nftAddress: hotel42NftContract.address
-                }
-              };
-
-              const { ipfs_hash } = await fetchIPFS(reservationInfo)
-
-
-              const tx = await hotel42NftContract.confirmReservation(ipfs_hash, hotel42Provider.address, hotel.canonicalHotelId);
-
-              await tx.wait();
-              // TODO add a success dialog
-              console.log('succesfully minted it!');
-            } catch (e) {
-              // TODO add a failure dialog
-              console.log('error confirming reservation: ', e);
-            }
-        }}>
+        {/* TODO: need to just approve the room price amount   */}
+        {/* TODO: only require approve() if not already approved */}
+        <Button colorScheme="teal" onClick={() => usdc.approve(hotel42NftContract.address, constants.MaxUint256).then(confirmReservation)}>
           Submit
         </Button>
       </Box>

@@ -36,6 +36,7 @@ export default function BookingPage() {
       <Heading>Book a hotel</Heading>
       {hotels.map(hotel => (
         <HotelCard
+          key={hotel.id}
           id={hotel.id}
           hotelName={hotel.hotelName}
           city={hotel.city}
