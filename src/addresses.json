@@ -1,6 +1,8 @@
 {
   "localhost": {
-    "hotel42NftContract": "0x851356ae760d987E095750cCeb3bC6014560891C",
-    "hotel42Provider": "0x84ea74d481ee0a5332c457a4d796187f6ba67feb"
+    "mockUsdc": "run deploy script",
+    "hotel42NftContract": "run deploy script",
+    "hotel42Provider": "run deploy script",
+    "hotel42Marketplace": "run deploy script"
   }
 }

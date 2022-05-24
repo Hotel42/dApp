@@ -25,6 +25,7 @@ interface Hotel42ProviderInterface extends ethers.utils.Interface {
     "addRoomTypeByHotelId(string,uint256,uint256)": FunctionFragment;
     "getAllHotels()": FunctionFragment;
     "getHotelById(uint256)": FunctionFragment;
+    "getPaymentInfo(uint256,uint256)": FunctionFragment;
     "getRoomTypesByHotelId(uint256)": FunctionFragment;
   };
 
@@ -45,6 +46,10 @@ interface Hotel42ProviderInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getPaymentInfo",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getRoomTypesByHotelId",
     values: [BigNumberish]
   ): string;
@@ -60,6 +65,10 @@ interface Hotel42ProviderInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getHotelById",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPaymentInfo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -134,13 +143,14 @@ export class Hotel42Provider extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [
-        ([string, string, string, BigNumber, string, BigNumber] & {
+        ([string, string, string, BigNumber, string, BigNumber, string] & {
           name: string;
           city: string;
           state: string;
           stars: BigNumber;
           imageUrl: string;
           id: BigNumber;
+          owner: string;
         })[]
       ]
     >;
@@ -150,21 +160,36 @@ export class Hotel42Provider extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [
-        [string, string, string, BigNumber, string, BigNumber] & {
+        [string, string, string, BigNumber, string, BigNumber, string] & {
           name: string;
           city: string;
           state: string;
           stars: BigNumber;
           imageUrl: string;
           id: BigNumber;
+          owner: string;
         }
       ]
     >;
 
+    getPaymentInfo(
+      _hotelId: BigNumberish,
+      _roomtTypeId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, string]>;
+
     getRoomTypesByHotelId(
       hotelId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[([string, BigNumber] & { name: string; price: BigNumber })[]]>;
+    ): Promise<
+      [
+        ([string, BigNumber, BigNumber] & {
+          name: string;
+          price: BigNumber;
+          id: BigNumber;
+        })[]
+      ]
+    >;
   };
 
   addHotel(
@@ -186,13 +211,14 @@ export class Hotel42Provider extends BaseContract {
   getAllHotels(
     overrides?: CallOverrides
   ): Promise<
-    ([string, string, string, BigNumber, string, BigNumber] & {
+    ([string, string, string, BigNumber, string, BigNumber, string] & {
       name: string;
       city: string;
       state: string;
       stars: BigNumber;
       imageUrl: string;
       id: BigNumber;
+      owner: string;
     })[]
   >;
 
@@ -200,20 +226,33 @@ export class Hotel42Provider extends BaseContract {
     id: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    [string, string, string, BigNumber, string, BigNumber] & {
+    [string, string, string, BigNumber, string, BigNumber, string] & {
       name: string;
       city: string;
       state: string;
       stars: BigNumber;
       imageUrl: string;
       id: BigNumber;
+      owner: string;
     }
   >;
+
+  getPaymentInfo(
+    _hotelId: BigNumberish,
+    _roomtTypeId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, string]>;
 
   getRoomTypesByHotelId(
     hotelId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<([string, BigNumber] & { name: string; price: BigNumber })[]>;
+  ): Promise<
+    ([string, BigNumber, BigNumber] & {
+      name: string;
+      price: BigNumber;
+      id: BigNumber;
+    })[]
+  >;
 
   callStatic: {
     addHotel(
@@ -235,13 +274,14 @@ export class Hotel42Provider extends BaseContract {
     getAllHotels(
       overrides?: CallOverrides
     ): Promise<
-      ([string, string, string, BigNumber, string, BigNumber] & {
+      ([string, string, string, BigNumber, string, BigNumber, string] & {
         name: string;
         city: string;
         state: string;
         stars: BigNumber;
         imageUrl: string;
         id: BigNumber;
+        owner: string;
       })[]
     >;
 
@@ -249,20 +289,33 @@ export class Hotel42Provider extends BaseContract {
       id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, string, BigNumber, string, BigNumber] & {
+      [string, string, string, BigNumber, string, BigNumber, string] & {
         name: string;
         city: string;
         state: string;
         stars: BigNumber;
         imageUrl: string;
         id: BigNumber;
+        owner: string;
       }
     >;
+
+    getPaymentInfo(
+      _hotelId: BigNumberish,
+      _roomtTypeId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, string]>;
 
     getRoomTypesByHotelId(
       hotelId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<([string, BigNumber] & { name: string; price: BigNumber })[]>;
+    ): Promise<
+      ([string, BigNumber, BigNumber] & {
+        name: string;
+        price: BigNumber;
+        id: BigNumber;
+      })[]
+    >;
   };
 
   filters: {};
@@ -288,6 +341,12 @@ export class Hotel42Provider extends BaseContract {
 
     getHotelById(
       id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPaymentInfo(
+      _hotelId: BigNumberish,
+      _roomtTypeId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -318,6 +377,12 @@ export class Hotel42Provider extends BaseContract {
 
     getHotelById(
       id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getPaymentInfo(
+      _hotelId: BigNumberish,
+      _roomtTypeId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

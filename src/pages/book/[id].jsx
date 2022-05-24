@@ -18,6 +18,7 @@ export default function BookWithHotelPage() {
       const roomTypes = tx.map(roomType => ({
         type: roomType[0],
         price: roomType[1].toNumber(),
+        id: roomType[2].toNumber()
       }));
       setRoomTypes(roomTypes);
 

@@ -14,3 +14,5 @@ dApp.iml
 
 # environment variables
 .env
+
+src/addresses.json

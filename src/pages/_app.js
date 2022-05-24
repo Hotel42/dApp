@@ -6,6 +6,9 @@ import { AccountContext, ContractsContext } from '../contexts';
 import addresses from '../addresses.json';
 import Hotel42NFT from '../../artifacts/contracts/Hotel42NFT.sol/Hotel42NFT.json';
 import Hotel42Provider from "../../artifacts/contracts/Hotel42Provider.sol/Hotel42Provider.json";
+import USDC from "../../artifacts/contracts/MockUSDC.sol/MockUSDC.json";
+import Hotel42Marketplace from '../../artifacts/contracts/Hotel42Marketplace.sol/Hotel42Marketplace.json'
+
 import { getCurrentAccount, getEthereumObject, getSignedContract, setupEthereumEventListeners } from '../utils/common';
 
 function App({ Component }) {
@@ -13,6 +16,8 @@ function App({ Component }) {
   const [contracts, setContracts] = React.useState({
     hotel42NftContract: null,
     hotel42Provider: null,
+    hotel42Marketplace: null,
+    usdcToken: null
   });
 
   const init = async () => {
@@ -33,12 +38,22 @@ function App({ Component }) {
       Hotel42Provider.abi
     );
 
-    if (!hotel42NftContract || !hotel42Provider) {
-      throw new Error('Contract not found: ', hotel42NftContract, hotel42Provider);
+    const hotel42Marketplace = getSignedContract(
+      addresses.localhost.hotel42Marketplace,
+      Hotel42Marketplace.abi
+    )
+
+    const usdc = getSignedContract(
+      addresses.localhost.mockUsdc,
+      USDC.abi
+    )
+
+    if (!hotel42NftContract || !hotel42Provider || !hotel42Marketplace || !usdc) {
+      throw new Error('Contract not found: ', hotel42NftContract, hotel42Provider, hotel42Marketplace, usdc);
     };
 
     const currentAccount = await getCurrentAccount();
-    setContracts({ hotel42NftContract, hotel42Provider });
+    setContracts({ hotel42NftContract, hotel42Provider, hotel42Marketplace, usdc });
     setAccount(currentAccount);
   };
 
