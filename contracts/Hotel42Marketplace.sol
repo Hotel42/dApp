@@ -38,18 +38,12 @@ contract Hotel42Marketplace is Ownable {
 
     // TODO: listing fee?
 
-    function getMarketplaceListing(address _nftContract, uint256 _tokenId) public view returns (MarketListing memory) {
-        return listingsByContract[_nftContract][_tokenId];
-    }
-
     function requireApproval(address _nftContract, uint256 _tokenId) private view {
         require(IERC721(_nftContract).getApproved(_tokenId) == address(this), "The market must be approved for the NFT");
     }
 
     function createMarketItem(address _nftContract, uint256 _tokenId, uint256 _sellPrice) public {
-          // TODO from Johnny: I tried to work on the below but i don't have context on how it was intended to be used.
-        // so I'm going to leave it commented out in the mean time and go ahead with integrating the dapp
-//        requireApproval(_nftContract, _tokenId);
+        requireApproval(_nftContract, _tokenId);
         uint256 marketListingId = _marketListingCounter.current();
 
         MarketListing memory newMarketListing = MarketListing({
@@ -107,5 +101,10 @@ contract Hotel42Marketplace is Ownable {
 
         emit MarketItemDeleted(_marketListingId, nftReference.nftContract, nftReference.tokenId);
         removeMarketItem(_marketListingId, nftReference.nftContract, nftReference.tokenId);
+    }
+
+    // TODO: figure out why can't just fetch public array
+    function getAllMarketItemIds() public view returns (uint256[] memory) {
+        return marketListingIds;
     }
 }

@@ -26,7 +26,7 @@ export function ReservationCard({
   const [listPrice, setListPrice] = React.useState(0);
 
   const fetchMarketplaceData = async () => {
-    const listing = await hotel42Marketplace.getMarketplaceListing(hotel42NftContract.address, tokenId);
+    const listing = await hotel42Marketplace.listingsByContract(hotel42NftContract.address, tokenId);
     setListPrice(listing.price.toNumber());
   }
 
@@ -88,6 +88,7 @@ export function ReservationCard({
         <Box as='span' color='gray.600' fontSize='xs'>
           {checkInDate} -> {checkOutDate}
         </Box>
+        {/* TODO: need to move some of the below logic to the parent, so this can handle the marketplace buy case as well */}
         <Box>
           {listPrice > 0 ? (
             <div>Listed for {listPrice}</div>
@@ -106,6 +107,8 @@ export function ReservationCard({
                   if (userDefinedPrice === 0) {
                     throw new Error('user defined price has not been set');
                   }
+                  const tx = await hotel42NftContract.approve(hotel42Marketplace.address, tokenId)
+                  await tx.wait()
                   setItemUpForSale(userDefinedPrice);
                 }}
               >
@@ -119,12 +122,12 @@ export function ReservationCard({
   )
 }
 
-const getTraitTypeValue = (traitType, attributesJson) => {
+const getTraitTypeValue = (traitType, attributesJson = []) => {
    const val = attributesJson.find(attribute => {
     return attribute.trait_type === traitType;
   });
   if (!val) {
     console.log('trait not found: ', traitType);
   }
-  return val.value;
+  return val?.value;
 }
