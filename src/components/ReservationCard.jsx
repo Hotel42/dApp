@@ -1,14 +1,47 @@
 import React from 'react';
-import {Box, Image, Badge} from '@chakra-ui/react';
+import {Flex, Input, Box, Image, Badge, Button} from '@chakra-ui/react';
+import {useContracts} from "../contexts";
 
-function ReservationCard({
-  propertyName,
-  imageUrl,
-  startDate,
-  endDate,
-  location,
-  isListed,
+const fetchIPFS = (data) => fetch('/api/ipfs', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data)
+}).then(res => res.json()).catch(err => alert(`IPFS request error: ${err.message}`))
+
+export function ReservationCard({
+  metadata
 }) {
+  const { hotel42Marketplace, hotel42NftContract } = useContracts();
+  const hotelName = getTraitTypeValue('hotelName', metadata.attributes);
+  const city = getTraitTypeValue('city', metadata.attributes);
+  const state = getTraitTypeValue('state', metadata.attributes);
+  const tokenId = metadata.tokenId;
+  const imageUrl = metadata.image;
+  const checkInDate = getTraitTypeValue('checkInDate', metadata.attributes);
+  const checkOutDate = getTraitTypeValue('checkOutDate', metadata.attributes);
+
+  const [userDefinedPrice, setUserDefinedPrice] = React.useState(0);
+  const [listPrice, setListPrice] = React.useState(0);
+
+  const fetchMarketplaceData = async () => {
+    const listing = await hotel42Marketplace.getMarketplaceListing(hotel42NftContract.address, tokenId);
+    setListPrice(listing.price.toNumber());
+  }
+
+  const setItemUpForSale = async (price) => {
+    try {
+      const res = await hotel42Marketplace.createMarketItem(hotel42NftContract.address, tokenId, price);
+    } catch (e) {
+      console.log('Error listing NFT up for sale: ', e);
+    }
+  }
+
+  React.useEffect(() => {
+    fetchMarketplaceData();
+  }, []);
+
   return (
     <Box
       maxW='300px'
@@ -19,7 +52,6 @@ function ReservationCard({
       boxShadow="xs"
       cursor="pointer"
       position="relative"
-      onClick={() => console.log('hello')}
       _hover={{
         boxShadow: 'md',
       }}
@@ -32,22 +64,14 @@ function ReservationCard({
 
       <Box p='5'>
         <Box display='flex' alignItems='baseline'>
-          {isListed && <Badge
-            borderRadius='full'
-            px='2'
-            colorScheme='purple'
-          >
-            LISTED
-          </Badge>}
           <Box
             color='gray.500'
             fontWeight='semibold'
             letterSpacing='wide'
             fontSize='xs'
-            ml={2}
             textTransform='uppercase'
           >
-            {location}
+            {`${city}, ${state}`}
           </Box>
         </Box>
 
@@ -58,14 +82,49 @@ function ReservationCard({
           lineHeight='tight'
           noOfLines={1}
         >
-          {propertyName}
+          {hotelName}
         </Box>
 
         <Box as='span' color='gray.600' fontSize='xs'>
-          {startDate} -> {endDate}
+          {checkInDate} -> {checkOutDate}
+        </Box>
+        <Box>
+          {listPrice > 0 ? (
+            <div>Listed for {listPrice}</div>
+          ) : (
+            <Flex>
+              <Input
+                type='number'
+                placeholder='$'
+                onChange={(e) => setUserDefinedPrice(e.target.value)}
+              />
+              <Button
+                isDisabled={!userDefinedPrice}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (userDefinedPrice === 0) {
+                    throw new Error('user defined price has not been set');
+                  }
+                  setItemUpForSale(userDefinedPrice);
+                }}
+              >
+                List
+              </Button>
+            </Flex>
+          )}
         </Box>
       </Box>
     </Box>
   )
 }
-export default ReservationCard;
+
+const getTraitTypeValue = (traitType, attributesJson) => {
+   const val = attributesJson.find(attribute => {
+    return attribute.trait_type === traitType;
+  });
+  if (!val) {
+    console.log('trait not found: ', traitType);
+  }
+  return val.value;
+}

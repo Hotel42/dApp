@@ -39,7 +39,6 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "updateReservation(uint256,string,string,string)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -99,10 +98,6 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "updateReservation",
-    values: [BigNumberish, string, string, string]
-  ): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -150,10 +145,6 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "updateReservation",
     data: BytesLike
   ): Result;
 
@@ -339,14 +330,6 @@ export class Hotel42NFT extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    updateReservation(
-      tokenID: BigNumberish,
-      _firstName: string,
-      _lastName: string,
-      _email: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
   approve(
@@ -435,14 +418,6 @@ export class Hotel42NFT extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  updateReservation(
-    tokenID: BigNumberish,
-    _firstName: string,
-    _lastName: string,
-    _email: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
     approve(
       to: string,
@@ -522,14 +497,6 @@ export class Hotel42NFT extends BaseContract {
 
     transferOwnership(
       newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateReservation(
-      tokenID: BigNumberish,
-      _firstName: string,
-      _lastName: string,
-      _email: string,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -716,14 +683,6 @@ export class Hotel42NFT extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    updateReservation(
-      tokenID: BigNumberish,
-      _firstName: string,
-      _lastName: string,
-      _email: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -821,14 +780,6 @@ export class Hotel42NFT extends BaseContract {
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateReservation(
-      tokenID: BigNumberish,
-      _firstName: string,
-      _lastName: string,
-      _email: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

@@ -24,6 +24,7 @@ interface Hotel42MarketplaceInterface extends ethers.utils.Interface {
   functions: {
     "createMarketItem(address,uint256,uint256)": FunctionFragment;
     "deleteMarketListing(uint256)": FunctionFragment;
+    "getMarketplaceListing(address,uint256)": FunctionFragment;
     "listingsByContract(address,uint256)": FunctionFragment;
     "marketItemReference(uint256)": FunctionFragment;
     "marketListingIds(uint256)": FunctionFragment;
@@ -40,6 +41,10 @@ interface Hotel42MarketplaceInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "deleteMarketListing",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMarketplaceListing",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "listingsByContract",
@@ -73,6 +78,10 @@ interface Hotel42MarketplaceInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "deleteMarketListing",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMarketplaceListing",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -198,6 +207,12 @@ export class Hotel42Marketplace extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    getMarketplaceListing(
+      _nftContract: string,
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[[string, BigNumber] & { seller: string; price: BigNumber }]>;
+
     listingsByContract(
       arg0: string,
       arg1: BigNumberish,
@@ -245,6 +260,12 @@ export class Hotel42Marketplace extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  getMarketplaceListing(
+    _nftContract: string,
+    _tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<[string, BigNumber] & { seller: string; price: BigNumber }>;
+
   listingsByContract(
     arg0: string,
     arg1: BigNumberish,
@@ -289,6 +310,12 @@ export class Hotel42Marketplace extends BaseContract {
       _marketListingId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    getMarketplaceListing(
+      _nftContract: string,
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string, BigNumber] & { seller: string; price: BigNumber }>;
 
     listingsByContract(
       arg0: string,
@@ -408,6 +435,12 @@ export class Hotel42Marketplace extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    getMarketplaceListing(
+      _nftContract: string,
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     listingsByContract(
       arg0: string,
       arg1: BigNumberish,
@@ -452,6 +485,12 @@ export class Hotel42Marketplace extends BaseContract {
     deleteMarketListing(
       _marketListingId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getMarketplaceListing(
+      _nftContract: string,
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     listingsByContract(

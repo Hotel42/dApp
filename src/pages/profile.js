@@ -1,6 +1,7 @@
 import React from "react";
 import { VStack, Center, Box, Heading, Flex, Text, Button } from "@chakra-ui/react";
 import { useAccount, useContracts } from "../contexts";
+import { ReservationCard } from "../components/ReservationCard";
 
 
 const fetchMetadata = (uri) => fetch(uri, {
@@ -12,7 +13,6 @@ const fetchMetadata = (uri) => fetch(uri, {
 export default function ProfilePage() {
   const accountContext = useAccount();
   const [reservations, setReservations] = React.useState([]);
-  const [reservationsMetadata, setReservationsMetadata] = React.useState([]);
   const { hotel42NftContract } = useContracts();
 
   const fetch = async () => {
@@ -24,12 +24,13 @@ export default function ProfilePage() {
 
     // TODO: should group metadata with ids in an array of objects
     const reservationMetadataResults = await Promise.all(reservationsUris.map(url => fetchMetadata(url)));
-    const shouldntNeedToFilterOnceAllSetUriConfirmedToWork = reservationMetadataResults.filter(m => m);
-
-    setReservations(reservationIds);
-    setReservationsMetadata(shouldntNeedToFilterOnceAllSetUriConfirmedToWork);
-    console.log(reservationIds);
-    // TODO (aaftab): fetch from IPFS based on reservationIds;
+    if (reservationIds.length !== reservationMetadataResults.length) throw new Error('id lenth and returned metadata array are mismatched!');
+    const reservationMetadataWithId = reservationMetadataResults.map((metadata, idx) => ({
+      ...metadata,
+      tokenId: reservationIds[idx],
+    }));
+    console.log(reservationMetadataWithId)
+    setReservations(reservationMetadataWithId);
   }
 
   React.useEffect(() => {
@@ -41,9 +42,14 @@ export default function ProfilePage() {
   return (
     <Box>
       <Heading>My Reservations</Heading>
-      <div>The below are NFT ids for the reservation belonging to this user</div>
-      {reservations.map(id => <div>{id}</div>)}
-      {reservationsMetadata.map(json => <code>{JSON.stringify(json)}</code>)}
+      {reservations.map(reservationMetaData => (
+        <ReservationCard
+          // passing this in so we can keep the same metadata structure
+          // when we update IPFS
+          metadata={reservationMetaData}
+        />
+      ))}
     </Box>
   );
 }
+

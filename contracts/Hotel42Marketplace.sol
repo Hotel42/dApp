@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
+import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol"; // TODO: might need to change if this changes in hotel42NFT.sol
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -37,12 +38,18 @@ contract Hotel42Marketplace is Ownable {
 
     // TODO: listing fee?
 
+    function getMarketplaceListing(address _nftContract, uint256 _tokenId) public view returns (MarketListing memory) {
+        return listingsByContract[_nftContract][_tokenId];
+    }
+
     function requireApproval(address _nftContract, uint256 _tokenId) private view {
         require(IERC721(_nftContract).getApproved(_tokenId) == address(this), "The market must be approved for the NFT");
     }
 
     function createMarketItem(address _nftContract, uint256 _tokenId, uint256 _sellPrice) public {
-        requireApproval(_nftContract, _tokenId);
+          // TODO from Johnny: I tried to work on the below but i don't have context on how it was intended to be used.
+        // so I'm going to leave it commented out in the mean time and go ahead with integrating the dapp
+//        requireApproval(_nftContract, _tokenId);
         uint256 marketListingId = _marketListingCounter.current();
 
         MarketListing memory newMarketListing = MarketListing({
