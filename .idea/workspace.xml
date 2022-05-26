@@ -2,15 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c3213b04-f5e8-43e3-a999-698c20396789" name="Changes" comment="setting up foundational repo">
+      <change afterPath="$PROJECT_DIR$/src/components/MarketplaceReservationCard.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/Hotel42Marketplace.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Hotel42Marketplace.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/addresses.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/addresses.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ReservationCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ReservationCard.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/profile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typechain/Hotel42Marketplace.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typechain/Hotel42Marketplace.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typechain/Hotel42NFT.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typechain/Hotel42NFT.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typechain/factories/Hotel42Marketplace__factory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typechain/factories/Hotel42Marketplace__factory.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/typechain/factories/Hotel42NFT__factory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typechain/factories/Hotel42NFT__factory.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,19 +37,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "nodejs.mocha.mocha_node_package_dir": "/Users/johnnyliaw/node_modules/mocha",
-    "nodejs_package_manager_path": "yarn",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "ts.external.directory.path": "/Users/johnnyliaw/Desktop/MyStuff/dApp/node_modules/typescript/lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;nodejs.mocha.mocha_node_package_dir&quot;: &quot;/Users/johnnyliaw/node_modules/mocha&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/johnnyliaw/Desktop/MyStuff/dApp/node_modules/typescript/lib&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="contractName.Successfully adds hotel" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
@@ -88,13 +83,15 @@
       <updated>1652531658511</updated>
     </task>
     <task active="true" id="Default" summary="Default task">
-      <changelist id="76e2f53e-f8d3-4684-977d-8b5d7c59e7f9" name="Changes" comment="setting up foundational repo" />
+      <changelist id="c3213b04-f5e8-43e3-a999-698c20396789" name="Changes" comment="" />
       <created>1652868774482</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1652868774482</updated>
       <workItem from="1652868779858" duration="155000" />
       <workItem from="1653191848966" duration="11666000" />
+      <workItem from="1653520987140" duration="53000" />
+      <workItem from="1653558979307" duration="1518000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />

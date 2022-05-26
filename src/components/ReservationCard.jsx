@@ -2,16 +2,12 @@ import React from 'react';
 import {Flex, Input, Box, Image, Badge, Button} from '@chakra-ui/react';
 import {useContracts} from "../contexts";
 
-const fetchIPFS = (data) => fetch('/api/ipfs', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(data)
-}).then(res => res.json()).catch(err => alert(`IPFS request error: ${err.message}`))
-
 export function ReservationCard({
-  metadata
+  metadata,
+  // the type can be of value 'profile' or 'marketplace'
+  // type 'profile' has the ability to list an NFT for sale with an input box.
+  // type 'marketplace' only has the ability see an NFT for sale price and purchase it.
+  type,
 }) {
   const { hotel42Marketplace, hotel42NftContract } = useContracts();
   const hotelName = getTraitTypeValue('hotelName', metadata.attributes);
@@ -91,7 +87,15 @@ export function ReservationCard({
         {/* TODO: need to move some of the below logic to the parent, so this can handle the marketplace buy case as well */}
         <Box>
           {listPrice > 0 ? (
-            <div>Listed for {listPrice}</div>
+            <div>
+              {type === 'marketplace' ? (
+                <Button onClick={() => {
+                  // TODO matt wire this up here.
+                }}>Purchase for {listPrice}</Button>
+              ) : (
+                <div>Listed for ${listPrice}</div>
+              )}
+            </div>
           ) : (
             <Flex>
               <Input
@@ -110,6 +114,7 @@ export function ReservationCard({
                   const tx = await hotel42NftContract.approve(hotel42Marketplace.address, tokenId)
                   await tx.wait()
                   setItemUpForSale(userDefinedPrice);
+                  setListPrice(userDefinedPrice);
                 }}
               >
                 List
