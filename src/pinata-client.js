@@ -1,12 +1,12 @@
 import pinataSDK from '@pinata/sdk';
 
-const pinata = pinataSDK(process.env.pinataApiKey, process.env.pinataSecretApiKey);
+const pinata = pinataSDK(process.env.pinata_api_key, process.env.pinata_secret_api_key);
 
 const NFT_METADATA_NAME = 'Hotel42';
 
 const parseMetadata = (reservationInfo, privateDataIFPSpin) => {
-    const { imageUrl, ...toBeAttributes } = reservationInfo;
-    const description = `Reservation for ${reservationInfo.hotelName}`
+    const { imageURL, ...toBeAttributes } = reservationInfo;
+    const description = `Reservation for ${reservationInfo.hotelName}`;
 
     const attributes = Object.entries({ ...toBeAttributes, privateBookingInfoUri: privateDataIFPSpin }).map(([key, value]) => {
         return { trait_type: key, value }
@@ -14,18 +14,15 @@ const parseMetadata = (reservationInfo, privateDataIFPSpin) => {
 
     const pinataKeyvalues = {
         name: NFT_METADATA_NAME,
-        description,
-        image: imageUrl,
-        canonicalHotelId: reservationInfo.canonicalHotelId,
-        canonicalHotelAddress: reservationInfo.canonicalHotelAddress,
-        nftAddress: reservationInfo.nftAddress,
+        description: description,
+        image: imageURL
     }
 
     return {
         nftMetadata: {
             name: NFT_METADATA_NAME,
             description,
-            image: imageUrl,
+            image: imageURL,
             attributes
         },
         pinataKeyvalues,
@@ -40,7 +37,6 @@ const pinToIPFS = async (nftMetadata, pinataKeyvalues) => {
             keyvalues: pinataKeyvalues ?? nftMetadata
         }
     });
-
     return result.IpfsHash
 }
 

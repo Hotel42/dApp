@@ -42,28 +42,35 @@ const MintReservationForm = ({
       let outDate = new Date(checkOutDate);
       outDate = outDate.toISOString();    
 
-      
-      const reservationInfo = {
-        privateReservationInfo: {
-          firstName,
-          lastName,
-          email,
-        },
-        publicReservationInfo: {
-          ...hotel,
-          checkInDate: inDate,
-          checkOutDate: outDate,
-          roomType: selectedRoomType,
-          nftAddress: hotel42NftContract.address
+      let tokenId;
+
+      const tx = await hotel42NftContract.confirmReservation(hotel42Provider.address, hotel.canonicalHotelId, selectedRoomType, inDate, outDate, hotel.city, hotel.state, hotel.hotelName, hotel.stars, hotel.imageUrl);
+      const result = await tx.wait();
+
+      for(let i in result.events){
+        if(result.events[i].event == "ReservationMinted"){
+          tokenId = result.events[i].args[0].toNumber();
+          break;
         }
+      }
+
+      const reservationInfo = {
+          privateReservationInfo: {
+            firstName,
+            lastName,
+            email,
+          },
+          token_id: tokenId
       };
 
-      const { ipfs_hash } = await fetchIPFS(reservationInfo)
+        let ipfs_hash = await fetchIPFS(reservationInfo);
+        console.log('ipfs hash for NFT metadata: ', ipfs_hash);
+        console.log('token ID for NFT metadata: ', tokenId);
 
+        const tx2 = await hotel42NftContract.settingTokenURI(ipfs_hash, tokenId);
+        const result2 = await tx2.wait();
 
-      const tx = await hotel42NftContract.confirmReservation(ipfs_hash, hotel42Provider.address, hotel.canonicalHotelId, selectedRoomType);
-
-      await tx.wait();
+      
       // TODO add a success dialog
       console.log('succesfully minted it!');
     } catch (e) {
