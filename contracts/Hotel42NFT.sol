@@ -12,7 +12,25 @@ import "./IH42P.sol";
 contract Hotel42NFT is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
+    struct Reservation {
+        uint256 hotelID;
+        uint256 roomTypeID;
+        string checkInDate;
+        string checkOutDate;
+        string city;
+        string state;
+        string hotelName;
+        uint256 stars;
+        string imageURL;
+    }
+
     address usdcAddress;
+
+    //token ID to reservation
+    mapping(uint256 => Reservation) tokenIDToReservation;
+
+    //tokenID to URIs
+    mapping(uint256 => string) private _tokenURIs;
 
     // map of addresses to an array of reservation nft Id's
     // so in the /profile page we can query and view all reservations
@@ -28,7 +46,11 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
 
     /* event to store token ID in FE for each NFT.
         Reason - each user will have multiple token IDs so when res. needs updating we need to know which token ID to update */
-    event ReservationMinted(uint indexed tokenID, address indexed hotelContract, uint256 indexed hotelId);
+    event ReservationMinted(
+        uint256 indexed tokenID,
+        address indexed hotelContract,
+        uint256 indexed hotelId
+    );
 
     function safeMint(address to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
@@ -40,19 +62,60 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         return "https://gateway.pinata.cloud/ipfs/";
     }
 
-    function confirmReservation(string memory ipfs_hash, address _hotelContract, uint256 _hotelId, uint256 _roomTypeId) public {
+    function confirmReservation(
+        address _hotelContract,
+        uint256 _hotelId,
+        uint256 _roomTypeId,
+        string memory _checkInDate,
+        string memory _checkOutDate,
+        string memory _city,
+        string memory _state,
+        string memory _hotelName,
+        uint256 _stars,
+        string memory _imageURL
+    ) public {
         uint256 tokenId = _tokenIdCounter.current();
-        (uint256 price, address owner) = IH42P(_hotelContract).getPaymentInfo(_hotelId, _roomTypeId);        
+        (uint256 price, address owner) = IH42P(_hotelContract).getPaymentInfo(
+            _hotelId,
+            _roomTypeId
+        );
         IERC20(usdcAddress).transferFrom(msg.sender, owner, price);
 
-        string memory token_uri = ipfs_hash;
-
         _safeMint(msg.sender, tokenId);
-        _setTokenURI(tokenId, token_uri); //creates mapping of token ID -> baseURI + IPFS hash
         ownerToReservations[msg.sender].push(tokenId);
+
+        Reservation memory new_res = Reservation(
+            _hotelId,
+            _roomTypeId,
+            _checkInDate,
+            _checkOutDate,
+            _city,
+            _state,
+            _hotelName,
+            _stars,
+            _imageURL
+        );
+        tokenIDToReservation[tokenId] = new_res;
+
         _tokenIdCounter.increment();
 
         emit ReservationMinted(tokenId, _hotelContract, _hotelId);
+    }
+
+    function settingTokenURI(string memory _ipfs_hash, uint256 tokenID) public {
+        _setTokenURI(tokenID, _ipfs_hash);
+    }
+
+    function getPublicResData(uint256 tokenID)
+        public
+        view
+        returns (Reservation memory)
+    {
+        return tokenIDToReservation[tokenID];
+    }
+
+    function getTokenURI(uint256 tokenID) public view returns (string memory) {
+        return _tokenURIs[tokenID];
     }
 
     // function updateReservation(
