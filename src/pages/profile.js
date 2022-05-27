@@ -15,16 +15,34 @@ const ManageReservation = ({ reservation }) => {
   const { hotel42NftContract, hotel42Marketplace } = useContracts();
   const [userDefinedPrice, setUserDefinedPrice] = React.useState(0);
   const [listPrice, setListPrice] = React.useState(0);
+  const [listingId, setListingId] = React.useState(null)
 
   const fetchMarketplaceData = async () => {
-    const listing = await hotel42Marketplace.listingsByContract(hotel42NftContract.address, tokenId);
+    const [marketplaceListingId, listing] = await Promise.all([
+      hotel42Marketplace.getMarketIdForNFT(hotel42NftContract.address, tokenId),
+      hotel42Marketplace.listingsByContract(hotel42NftContract.address, tokenId)
+    ]);
+    setListingId(marketplaceListingId.toNumber())
     setListPrice(listing.price.toNumber());
   }
 
   const setItemUpForSale = async (price) => {
     try {
       const res = await hotel42Marketplace.createMarketItem(hotel42NftContract.address, tokenId, price);
-      await res.wait()
+      const receipt = await res.wait();
+      setListingId(receipt.events[0].args.marketListingId.toNumber())
+      setListPrice(userDefinedPrice);
+    } catch (e) {
+      console.log('Error listing NFT up for sale: ', e);
+    }
+  }
+
+  const deleteMarketListing = async () => {
+    try {
+      const res = await hotel42Marketplace.deleteMarketListing(listingId);
+      await res.wait();
+      console.log('done! refresh data')
+      setListPrice(0)
     } catch (e) {
       console.log('Error listing NFT up for sale: ', e);
     }
@@ -36,12 +54,15 @@ const ManageReservation = ({ reservation }) => {
 
   if (listPrice) {
     return (
-      <div>
-        <Spacer height="4px" />
-        <Badge colorScheme="purple">
-          Listed for ${listPrice}
-        </Badge>
-      </div>
+      <Box>
+        <div>
+          <Spacer height="4px" />
+          <Badge colorScheme="purple">
+            Listed for ${listPrice}
+          </Badge>
+        </div>
+        <Button mt='1rem' onClick={deleteMarketListing}>Delete Listing</Button>
+      </Box>
     )
   }
 
@@ -65,12 +86,12 @@ const ManageReservation = ({ reservation }) => {
           const tx = await hotel42NftContract.approve(hotel42Marketplace.address, tokenId)
           await tx.wait()
           await setItemUpForSale(userDefinedPrice);
-          setListPrice(userDefinedPrice);
         }}
       >
         List
       </Button>
     </Flex>
+    <Button mt='1rem'>Update Booking Info</Button>
   </>)
 }
 
@@ -82,7 +103,6 @@ export default function ProfilePage() {
   const fetch = async () => {
     const tx = await hotel42NftContract.tokensOfOwner()
     const reservationIds = tx.map(reservationId => reservationId.toNumber()).filter(i => i); // zero is bad
-
 
     const reservationsUris = await Promise.all(reservationIds.map(rId => hotel42NftContract.tokenURI(rId)));
 

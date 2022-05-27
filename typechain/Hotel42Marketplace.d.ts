@@ -25,6 +25,7 @@ interface Hotel42MarketplaceInterface extends ethers.utils.Interface {
     "createMarketItem(address,uint256,uint256)": FunctionFragment;
     "deleteMarketListing(uint256)": FunctionFragment;
     "getAllMarketItemIds()": FunctionFragment;
+    "getMarketIdForNFT(address,uint256)": FunctionFragment;
     "listingsByContract(address,uint256)": FunctionFragment;
     "marketItemReference(uint256)": FunctionFragment;
     "marketListingIds(uint256)": FunctionFragment;
@@ -45,6 +46,10 @@ interface Hotel42MarketplaceInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getAllMarketItemIds",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMarketIdForNFT",
+    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "listingsByContract",
@@ -82,6 +87,10 @@ interface Hotel42MarketplaceInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getAllMarketItemIds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMarketIdForNFT",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -209,6 +218,12 @@ export class Hotel42Marketplace extends BaseContract {
 
     getAllMarketItemIds(overrides?: CallOverrides): Promise<[BigNumber[]]>;
 
+    getMarketIdForNFT(
+      _nftContract: string,
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     listingsByContract(
       arg0: string,
       arg1: BigNumberish,
@@ -258,6 +273,12 @@ export class Hotel42Marketplace extends BaseContract {
 
   getAllMarketItemIds(overrides?: CallOverrides): Promise<BigNumber[]>;
 
+  getMarketIdForNFT(
+    _nftContract: string,
+    _tokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   listingsByContract(
     arg0: string,
     arg1: BigNumberish,
@@ -304,6 +325,12 @@ export class Hotel42Marketplace extends BaseContract {
     ): Promise<void>;
 
     getAllMarketItemIds(overrides?: CallOverrides): Promise<BigNumber[]>;
+
+    getMarketIdForNFT(
+      _nftContract: string,
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     listingsByContract(
       arg0: string,
@@ -425,6 +452,12 @@ export class Hotel42Marketplace extends BaseContract {
 
     getAllMarketItemIds(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getMarketIdForNFT(
+      _nftContract: string,
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     listingsByContract(
       arg0: string,
       arg1: BigNumberish,
@@ -472,6 +505,12 @@ export class Hotel42Marketplace extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getAllMarketItemIds(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getMarketIdForNFT(
+      _nftContract: string,
+      _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
