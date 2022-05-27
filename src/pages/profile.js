@@ -1,8 +1,21 @@
 import React from "react";
-import { Box, Heading, Flex, Button, Input, Badge } from "@chakra-ui/react";
+import { Box, Heading, Flex, Button, Input, Badge, useDisclosure } from "@chakra-ui/react";
 import { useAccount, useContracts } from "../contexts";
 import { ReservationCard } from "../components/ReservationCard";
 import { Spacer } from "../components/Spacer";
+import getTraitTypeValue from "../utils/getTraitTypeValue";
+import UpdateReservationForm from "../components/UpdateReservationForm";
+
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from '@chakra-ui/react'
+
 
 const fetchMetadata = (uri) => fetch(uri, {
   method: 'GET',
@@ -11,11 +24,15 @@ const fetchMetadata = (uri) => fetch(uri, {
 })
 
 const ManageReservation = ({ reservation }) => {
-  const { tokenId } = reservation;
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const { tokenId, attributes } = reservation;
   const { hotel42NftContract, hotel42Marketplace } = useContracts();
   const [userDefinedPrice, setUserDefinedPrice] = React.useState(0);
   const [listPrice, setListPrice] = React.useState(0);
-  const [listingId, setListingId] = React.useState(null)
+  const [listingId, setListingId] = React.useState(null);
+
+  const privateBookingInfoUri = getTraitTypeValue("privateBookingInfoUri", attributes);
 
   const fetchMarketplaceData = async () => {
     const [marketplaceListingId, listing] = await Promise.all([
@@ -41,7 +58,7 @@ const ManageReservation = ({ reservation }) => {
     try {
       const res = await hotel42Marketplace.deleteMarketListing(listingId);
       await res.wait();
-      console.log('done! refresh data')
+      console.log('done! should refresh data...')
       setListPrice(0)
     } catch (e) {
       console.log('Error listing NFT up for sale: ', e);
@@ -51,6 +68,16 @@ const ManageReservation = ({ reservation }) => {
   React.useEffect(() => {
     fetchMarketplaceData();
   }, []);
+
+
+  React.useEffect(() => {
+    console.log("useEffect", privateBookingInfoUri)
+    if (privateBookingInfoUri) {
+      fetchMetadata(privateBookingInfoUri).then(data => {
+        console.log('private data', data)
+      });
+    }
+  }, [privateBookingInfoUri]);
 
   if (listPrice) {
     return (
@@ -91,7 +118,18 @@ const ManageReservation = ({ reservation }) => {
         List
       </Button>
     </Flex>
-    <Button mt='1rem'>Update Booking Info</Button>
+    <Button mt='1rem' onClick={onOpen}>Update Booking Info</Button>
+
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Booking Info</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <UpdateReservationForm tokenId={tokenId} />
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   </>)
 }
 

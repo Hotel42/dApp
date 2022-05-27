@@ -119,6 +119,7 @@ contract Hotel42NFT is ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     function settingTokenURI(string memory _ipfs_hash, uint256 tokenID) public {
+        // TODO: require auth (anyone can update token URI...)
         _setTokenURI(tokenID, _ipfs_hash);
     }
 

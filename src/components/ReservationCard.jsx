@@ -1,13 +1,12 @@
 import React from 'react';
 import {Box, Image} from '@chakra-ui/react';
-import {useContracts} from "../contexts";
 import {Spacer} from "./Spacer";
+import getTraitTypeValue from '../utils/getTraitTypeValue';
 
 export function ReservationCard({
   metadata,
   ManageReservation,
 }) {
-  const { hotel42Marketplace, hotel42NftContract, usdc } = useContracts();
   const hotelName = getTraitTypeValue('hotelName', metadata.attributes);
   const city = getTraitTypeValue('city', metadata.attributes);
   const state = getTraitTypeValue('state', metadata.attributes);
@@ -73,16 +72,6 @@ export function ReservationCard({
       </Box>
     </Box>
   )
-}
-
-const getTraitTypeValue = (traitType, attributesJson = []) => {
-   const val = attributesJson.find(attribute => {
-    return attribute.trait_type === traitType;
-  });
-  if (!val) {
-    console.log('trait not found: ', traitType);
-  }
-  return val?.value;
 }
 
 const month = ["Jan", "Feb", "Mar", 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
