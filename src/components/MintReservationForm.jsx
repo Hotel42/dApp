@@ -63,7 +63,7 @@ const MintReservationForm = ({
           token_id: tokenId
       };
 
-        let ipfs_hash = await fetchIPFS(reservationInfo);
+        let { ipfs_hash } = await fetchIPFS(reservationInfo);
         console.log('ipfs hash for NFT metadata: ', ipfs_hash);
         console.log('token ID for NFT metadata: ', tokenId);
 
