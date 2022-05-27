@@ -44,7 +44,7 @@ export default function ProfilePage() {
       <Heading>My Reservations</Heading>
       {reservations.map(reservationMetaData => (
         <ReservationCard
-          id={reservationMetaData.tokenId}
+          key={reservationMetaData.tokenId}
           // passing this in so we can keep the same metadata structure
           // when we update IPFS
           metadata={reservationMetaData}

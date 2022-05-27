@@ -130,15 +130,14 @@ contract Hotel42NFT is ERC721Enumerable, ERC721URIStorage, Ownable {
         return tokenIDToReservation[tokenID];
     }
 
-    // TODO: get tokens of owner to return correct results
-    // https://docs.openzeppelin.com/contracts/4.x/api/token/erc721#IERC721Enumerable-tokenOfOwnerByIndex-address-uint256-
-    function tokensOfOwner() external view returns(uint256[] memory ownerTokens) {
+    function tokensOfOwner() external view returns(uint256[] memory) {
         uint256 tokenCount = balanceOf(msg.sender);
+        uint256[] memory ownerTokens = new uint256[](tokenCount);
 
-        // TODO: tokenOfOwnerByIndex(address owner, uint256 index)
-        /*
-        Returns a token ID owned by owner at a given index of its token list.
-        Use along with balanceOf to enumerate all of owner's tokens.
-        */
+        for(uint256 i; i < tokenCount; ++i) {
+            ownerTokens[i] = tokenOfOwnerByIndex(msg.sender, i);
+        }
+
+        return ownerTokens;
     }
 }

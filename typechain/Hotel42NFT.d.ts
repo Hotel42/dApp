@@ -425,9 +425,7 @@ export class Hotel42NFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    tokensOfOwner(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { ownerTokens: BigNumber[] }>;
+    tokensOfOwner(overrides?: CallOverrides): Promise<[BigNumber[]]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 

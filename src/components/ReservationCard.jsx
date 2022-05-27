@@ -34,6 +34,7 @@ export function ReservationCard({
   const setItemUpForSale = async (price) => {
     try {
       const res = await hotel42Marketplace.createMarketItem(hotel42NftContract.address, tokenId, price);
+      await res.wait()
     } catch (e) {
       console.log('Error listing NFT up for sale: ', e);
     }
@@ -102,8 +103,11 @@ export function ReservationCard({
                   <Spacer height="12px"/>
                   <Button
                     onClick={async () => {
-                      await usdc.approve(hotel42Marketplace.address, constants.MaxUint256);
-                      await hotel42Marketplace.purchaseMarketItem(itemId);
+                      const approval = await usdc.approve(hotel42Marketplace.address, constants.MaxUint256);
+                      await approval.wait();
+                      const purchase = await hotel42Marketplace.purchaseMarketItem(itemId);
+                      await purchase.wait();
+                      console.log('purchase finished, navigate to profile page -> update reservation details')
                     }}
                     colorScheme="yellow"
                   >Purchase for ${listPrice}</Button>
@@ -137,7 +141,7 @@ export function ReservationCard({
                     }
                     const tx = await hotel42NftContract.approve(hotel42Marketplace.address, tokenId)
                     await tx.wait()
-                    setItemUpForSale(userDefinedPrice);
+                    await setItemUpForSale(userDefinedPrice);
                     setListPrice(userDefinedPrice);
                   }}
                 >
