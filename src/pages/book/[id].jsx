@@ -74,18 +74,19 @@ export default function BookWithHotelPage() {
           </Flex>
           {hotel && roomTypes && (
             <Flex>
-              <MintReservationForm hotel={hotel} roomTypes={roomTypes}/>
-              <Spacer width="50px"/>
-              <Box maxWidth="400px">
+              <Box maxWidth="420px">
                 <Spacer height="50px"/>
                 <Text color="#474c55">
                   <span style={{
-                    'fontWeight': '500'
+                    'fontWeight': '550'
                   }}>{hotel.hotelName}</span> is a seaside village next to Pemuteran close to Menjangan Island, diving and snorkeling paradise. It has diverse scenery and authentic culture steeped in tradition. Here you can truly relax away from the bustle of the south. The resort has panoramic views of the hills, the bay of Sumberkima and the volcanoes of Java. We have two restaurants at the retreat, serving local and international cuisines. Our reception team can organise all your excursions, yoga sessions and spa treatments.
                 </Text>
               </Box>
+              <Spacer width="100px"/>
+              <MintReservationForm hotel={hotel} roomTypes={roomTypes}/>
             </Flex>
           )}
+          <Spacer height="200px"/>
         </>
         ) : (
           <div>
