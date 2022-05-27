@@ -2,6 +2,8 @@ import React from "react";
 import { VStack, Center, Box, Heading, Flex, Text, Button } from "@chakra-ui/react";
 import { useAccount, useContracts } from "../contexts";
 import { HotelCard } from "../components/HotelCard";
+import { Spacer } from "../components/Spacer";
+import {PageContainer} from "../components/PageContainer";
 
 export default function BookingPage() {
   const [hotels, setHotels] = React.useState([]);
@@ -10,7 +12,6 @@ export default function BookingPage() {
 
   const fetch = async () => {
     const tx = await hotel42Provider.getAllHotels().catch(err => {
-      console.log('err', err)
       throw err;
     });
     const hotels = tx.map(hotel => {
@@ -32,19 +33,24 @@ export default function BookingPage() {
     }
   }, [hotel42Provider, accountContext.address]);
   return (
-    <div>
+    <PageContainer>
       <Heading>Book a hotel</Heading>
-      {hotels.map(hotel => (
-        <HotelCard
-          key={hotel.id}
-          id={hotel.id}
-          hotelName={hotel.hotelName}
-          city={hotel.city}
-          state={hotel.state}
-          stars={hotel.stars}
-          imageUrl={hotel.imageUrl}
-        />
-      ))}
-    </div>
+      <Spacer height="20px"/>
+      <div style={{
+        'display': 'flex',
+      }}>
+        {hotels.map(hotel => (
+          <HotelCard
+            key={hotel.id}
+            id={hotel.id}
+            hotelName={hotel.hotelName}
+            city={hotel.city}
+            state={hotel.state}
+            stars={hotel.stars}
+            imageUrl={hotel.imageUrl}
+          />
+        ))}
+      </div>
+    </PageContainer>
   );
 }

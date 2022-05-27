@@ -1,8 +1,10 @@
 import React from 'react';
 import { useRouter } from 'next/router'
-import { VStack, Center, Box, Heading, Flex, Text, Button } from "@chakra-ui/react";
+import {VStack, Center, Box, Heading, Flex, Text, Button, Image} from "@chakra-ui/react";
 import {useAccount, useContracts} from "../../contexts";
 import MintReservationForm from "../../components/MintReservationForm";
+import {PageContainer} from "../../components/PageContainer";
+import {Spacer} from "../../components/Spacer";
 
 
 export default function BookWithHotelPage() {
@@ -33,7 +35,6 @@ export default function BookWithHotelPage() {
           canonicalHotelAddress: hotel42Provider.address
       }
       setHotel(hotel);
-      console.log(hotel)
     }
   }
 
@@ -44,11 +45,53 @@ export default function BookWithHotelPage() {
   }, [hotel42Provider, accountContext.address]);
 
   return (
-    <div>
-      <Heading>Book</Heading>
-      {hotel && roomTypes && (
-        <MintReservationForm hotel={hotel} roomTypes={roomTypes}/>
-      )}
-    </div>
+    <PageContainer>
+      {hotel ? (
+        <>
+          <Heading>{hotel.hotelName}</Heading>
+          <Spacer height="20px"/>
+          <Box>
+            <Image
+              borderRadius="10px"
+              src={hotel.imageUrl}
+            />
+          </Box>
+          <Spacer height="20px"/>
+          <Flex>
+            <Heading size="md">
+              <Flex>
+                📌<Spacer width="10px"/>{hotel.city}, {hotel.state}
+              </Flex>
+            </Heading>
+
+            <Spacer width="30px"/>
+
+            <Heading size="md">
+              <Flex>
+                ⭐️<Spacer width="5px"/>/<Spacer width="5px"/>{hotel.stars}
+              </Flex>
+            </Heading>
+          </Flex>
+          {hotel && roomTypes && (
+            <Flex>
+              <MintReservationForm hotel={hotel} roomTypes={roomTypes}/>
+              <Spacer width="50px"/>
+              <Box maxWidth="400px">
+                <Spacer height="50px"/>
+                <Text color="#474c55">
+                  <span style={{
+                    'fontWeight': '500'
+                  }}>{hotel.hotelName}</span> is a seaside village next to Pemuteran close to Menjangan Island, diving and snorkeling paradise. It has diverse scenery and authentic culture steeped in tradition. Here you can truly relax away from the bustle of the south. The resort has panoramic views of the hills, the bay of Sumberkima and the volcanoes of Java. We have two restaurants at the retreat, serving local and international cuisines. Our reception team can organise all your excursions, yoga sessions and spa treatments.
+                </Text>
+              </Box>
+            </Flex>
+          )}
+        </>
+        ) : (
+          <div>
+            loading
+          </div>
+        )}
+    </PageContainer>
   );
 }

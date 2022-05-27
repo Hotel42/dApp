@@ -2,10 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c3213b04-f5e8-43e3-a999-698c20396789" name="Changes" comment="setting up foundational repo">
-      <change afterPath="$PROJECT_DIR$/src/components/MarketplaceReservationCard.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/PageContainer.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/deployHotel42Provider.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/deployHotel42Provider.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/addresses.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/addresses.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ReservationCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ReservationCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/HotelCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/HotelCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MintReservationForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MintReservationForm.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Spacer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Spacer.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/book.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/book.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/book/[id].jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/book/[id].jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +96,9 @@
       <workItem from="1652868779858" duration="155000" />
       <workItem from="1653191848966" duration="11666000" />
       <workItem from="1653520987140" duration="53000" />
-      <workItem from="1653558979307" duration="1518000" />
+      <workItem from="1653558979307" duration="1952000" />
+      <workItem from="1653604174206" duration="26000" />
+      <workItem from="1653644349125" duration="5083000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
