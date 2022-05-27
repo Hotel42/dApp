@@ -33,6 +33,13 @@ const MintReservationForm = ({
 
   const { hotel42NftContract, hotel42Provider, usdc } = useContracts();
 
+  const  generateNewIpfsAndUpdateTokenUri = async (reservationInfo, tokenId) => {
+    let { ipfs_hash } = await fetchIPFS(reservationInfo);
+  
+    const tx2 = await hotel42NftContract.settingTokenURI(ipfs_hash, tokenId);
+    await tx2.wait();
+  }
+  
   const confirmReservation = async () => {
     try {
 
@@ -63,12 +70,7 @@ const MintReservationForm = ({
           token_id: tokenId
       };
 
-        let { ipfs_hash } = await fetchIPFS(reservationInfo);
-        console.log('ipfs hash for NFT metadata: ', ipfs_hash);
-        console.log('token ID for NFT metadata: ', tokenId);
-
-        const tx2 = await hotel42NftContract.settingTokenURI(ipfs_hash, tokenId);
-        const result2 = await tx2.wait();
+      await generateNewIpfsAndUpdateTokenUri(reservationInfo, tokenId);
 
       
       // TODO add a success dialog
