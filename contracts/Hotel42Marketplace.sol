@@ -112,4 +112,20 @@ contract Hotel42Marketplace is Ownable {
 
         return allListingIds;
     }
+
+    function getMarketIdForNFT(address _nftContract, uint256 _tokenId) public view returns (uint256) {
+        ERC721Reference memory nftReference; 
+        uint256 currentListingId;
+
+        for (uint256 i; i < marketListingIds.length; ++i) {
+            currentListingId = marketListingIds[i];
+            nftReference = marketItemReference[currentListingId];
+
+            if(nftReference.nftContract == _nftContract && nftReference.tokenId == _tokenId) {
+                return currentListingId;
+            }
+        }
+
+        return 0;
+    }
 }
