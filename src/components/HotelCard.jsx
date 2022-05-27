@@ -16,6 +16,7 @@ export function HotelCard({
     <Box
       maxW='300px'
       borderWidth='1px'
+      marginRight="20px"
       borderRadius='xl'
       transitionDuration="250ms"
       overflow='hidden'
@@ -39,10 +40,9 @@ export function HotelCard({
           fontWeight='semibold'
           letterSpacing='wide'
           fontSize='xs'
-          ml={2}
           textTransform='uppercase'
         >
-          {city}{state}
+          {city}, {state}
         </Box>
 
         <Box

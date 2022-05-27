@@ -6,10 +6,11 @@ import {
   Input,
   Box,
   Button,
-  Center
+  Center, Flex, Heading, Text
 } from '@chakra-ui/react'
 import {useContracts} from '../contexts';
 import {constants} from 'ethers'
+import {Spacer} from "./Spacer";
 
 const fetchIPFS = (data) => fetch('/api/ipfs', {
   method: 'POST',
@@ -82,70 +83,100 @@ const MintReservationForm = ({
   }
 
   return (
-    <Center>
-      <Box maxW="350px" mt="3rem">
-        <FormControl isRequired>
-          <FormLabel htmlFor='first-name'>First name</FormLabel>
-          <Input
-          id='first-name'
-          placeholder='First name'
-          onChange={(e) => setFirstName(e.target.value)}
-          />
-        </FormControl>
+    <div>
+      <Box maxW="375px" mt="3rem">
 
-        <FormControl isRequired>
-          <FormLabel htmlFor='last-name'>Last name</FormLabel>
+        {/* Inputting your name */}
+        <Heading size="sm" fontWeight="600">
+          <Flex>
+            🙋<Spacer width="10px"/>‍️Your name
+          </Flex>
+        </Heading>
+        <Spacer height="10px"/>
+        <Flex>
+          <Input
+            id='first-name'
+            placeholder='First name'
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <Spacer width="15px"/>
           <Input
             id='last-name'
             placeholder='Last name'
             onChange={(e) => setLastName(e.target.value)}
           />
-        </FormControl>
+        </Flex>
 
-        <FormControl isRequired>
-          <FormLabel htmlFor='email'>Email</FormLabel>
-          <Input
-            id='email'
-            type='email'
-            placeholder='Email'
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </FormControl>
+        <Spacer height="15px"/>
 
-        <FormControl isRequired>
-          <FormLabel htmlFor='checkInDate'>Check in date</FormLabel>
-          <Input
-            id='checkInDate'
-            type='date'
-            placeholder='Check in date'
-            onChange={(e) => setCheckInDate(e.target.value)}
-          />
-        </FormControl>
+        {/* Inputting your email */}
+        <Heading size="sm" fontWeight="600">
+          <Flex>
+            ✉️<Spacer width="10px"/>‍️Email
+          </Flex>
+        </Heading>
+        <Spacer height="10px"/>
+        <Input
+          id='email'
+          type='email'
+          placeholder='Email'
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-        <FormControl isRequired>
-          <FormLabel htmlFor='checkOutDate'>Check out date</FormLabel>
-          <Input
-            id='checkOutDate'
-            type='date'
-            placeholder='Check out date'
-            onChange={(e) => setCheckOutDate(e.target.value)}
-          />
-        </FormControl>
+        <Spacer height="15px"/>
 
-        <FormControl isRequired>
-          <FormLabel htmlFor='roomType'>Room type</FormLabel>
-          <Select
-            id='roomType'
-            placeholder='Select room type'
-            onChange={(e) => {
-              setSelectedRoomType(e.target.value)
-            }}
-          >
-            {roomTypes.map(roomType => (
-              <option key={roomType.id} value={roomType.id}>{roomType.type} - ${roomType.price}</option>
-            ))}
-          </Select>
-        </FormControl>
+        {/* Inputting your check in date */}
+        <Heading size="sm" fontWeight="600">
+          <Flex>
+            🗓<Spacer width="10px"/>‍️Check in date
+          </Flex>
+        </Heading>
+        <Spacer height="10px"/>
+        <Input
+          id='checkInDate'
+          type='date'
+          placeholder='Check in date'
+          onChange={(e) => setCheckInDate(e.target.value)}
+        />
+
+        <Spacer height="15px"/>
+
+        {/* Inputting your check in date */}
+        <Heading size="sm" fontWeight="600">
+          <Flex>
+            🗓<Spacer width="10px"/>‍️Check out date
+          </Flex>
+        </Heading>
+        <Spacer height="10px"/>
+        <Input
+          id='checkOutDate'
+          type='date'
+          placeholder='Check out date'
+          onChange={(e) => setCheckOutDate(e.target.value)}
+        />
+
+        <Spacer height="15px"/>
+
+        {/* Inputting your check in date */}
+        <Heading size="sm" fontWeight="600">
+          <Flex>
+            🛌<Spacer width="10px"/>Room type
+          </Flex>
+        </Heading>
+        <Spacer height="10px"/>
+        <Select
+          id='roomType'
+          placeholder='Select room type'
+          onChange={(e) => {
+            setSelectedRoomType(e.target.value)
+          }}
+        >
+          {roomTypes.map(roomType => (
+            <option key={roomType.id} value={roomType.id}>{roomType.type} - ${roomType.price}</option>
+          ))}
+        </Select>
+
+        <Spacer height="20px"/>
 
         {/* TODO: need to just approve the room price amount   */}
         {/* TODO: only require approve() if not already approved */}
@@ -155,8 +186,9 @@ const MintReservationForm = ({
           }}>
           Submit
         </Button>
+        <Spacer height="200px"/>
       </Box>
-    </Center>
+    </div>
   );
 }
 
