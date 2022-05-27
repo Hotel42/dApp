@@ -69,6 +69,7 @@ export default function MarketplacePage() {
         marketListings.map(reservation => (<ReservationCard
           type="marketplace"
           key={reservation.listingId}
+          itemId={reservation.listingId}
           metadata={reservation}
         />))
       }

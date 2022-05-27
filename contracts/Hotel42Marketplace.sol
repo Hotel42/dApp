@@ -103,8 +103,13 @@ contract Hotel42Marketplace is Ownable {
         removeMarketItem(_marketListingId, nftReference.nftContract, nftReference.tokenId);
     }
 
-    // TODO: figure out why can't just fetch public array
     function getAllMarketItemIds() public view returns (uint256[] memory) {
-        return marketListingIds;
+        uint256[] memory allListingIds = new uint256[](marketListingIds.length);
+
+        for(uint256 i; i < marketListingIds.length; ++i) {
+            allListingIds[i] = marketListingIds[i];
+        }
+
+        return allListingIds;
     }
 }
