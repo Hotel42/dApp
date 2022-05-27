@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { Heading, Box } from "@chakra-ui/react";
-import { useAccount, useContracts } from "../contexts";
+import { Heading, Box, Button } from "@chakra-ui/react";
+import { useContracts } from "../contexts";
 import { ReservationCard } from '../components/ReservationCard'
-
-/*
-  WIP
-*/
+import { constants } from 'ethers'
+import { Spacer } from "../components/Spacer";
 
 
 const fetchMetadata = (uri) => fetch(uri, {
@@ -20,7 +18,7 @@ const fetchMetadata = (uri) => fetch(uri, {
 
 
 export default function MarketplacePage() {
-  const { hotel42Marketplace, hotel42NftContract } = useContracts();
+  const { hotel42Marketplace, hotel42NftContract, usdc } = useContracts();
   const [marketListings, setMarketListings] = useState([])
 
   const fetch = async () => {
@@ -62,6 +60,22 @@ export default function MarketplacePage() {
     }
   }, [hotel42Marketplace, hotel42NftContract]);
 
+  const ManageReservation = ({ reservation }) => (
+    <div>
+      <Spacer height="12px" />
+      <Button
+        onClick={async () => {
+          const approval = await usdc.approve(hotel42Marketplace.address, constants.MaxUint256);
+          await approval.wait();
+          const purchase = await hotel42Marketplace.purchaseMarketItem(reservation.listingId);
+          await purchase.wait();
+          console.log('purchase finished, navigate to profile page -> update reservation details')
+        }}
+        colorScheme="yellow"
+      >Purchase for ${reservation.price.toString()}</Button>
+    </div>
+  )
+
   return (
     <Box>
       <Heading>Marketplace</Heading>
@@ -69,8 +83,8 @@ export default function MarketplacePage() {
         marketListings.map(reservation => (<ReservationCard
           type="marketplace"
           key={reservation.listingId}
-          itemId={reservation.listingId}
           metadata={reservation}
+          ManageReservation={<ManageReservation reservation={reservation} />}
         />))
       }
     </Box>
