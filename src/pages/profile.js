@@ -1,5 +1,5 @@
 import React from "react";
-import { VStack, Center, Box, Heading, Flex, Text, Button, Input, Badge } from "@chakra-ui/react";
+import { Box, Heading, Flex, Button, Input, Badge } from "@chakra-ui/react";
 import { useAccount, useContracts } from "../contexts";
 import { ReservationCard } from "../components/ReservationCard";
 import { Spacer } from "../components/Spacer";

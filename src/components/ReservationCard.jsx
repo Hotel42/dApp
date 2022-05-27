@@ -1,5 +1,5 @@
 import React from 'react';
-import {Flex, Input, Box, Image, Badge, Button, Text} from '@chakra-ui/react';
+import {Box, Image} from '@chakra-ui/react';
 import {useContracts} from "../contexts";
 import {Spacer} from "./Spacer";
 
@@ -68,7 +68,6 @@ export function ReservationCard({
           {checkInDateStr} &#8594; {checkOutDateStr}
         </Box>
         <Box>
-          {/* <ManageReservation />  */}
           {ManageReservation}
         </Box>
       </Box>
