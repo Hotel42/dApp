@@ -94,11 +94,13 @@ contract Hotel42NFT is ERC721Enumerable, ERC721URIStorage, Ownable {
     ) public {
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
-        (uint256 price, address owner) = IH42P(_hotelContract).getPaymentInfo(
+        (uint256 price, address hotelOwner) = IH42P(_hotelContract).getPaymentInfo(
             _hotelId,
             _roomTypeId
         );
-        IERC20(usdcAddress).transferFrom(msg.sender, owner, price);
+        require(address(hotelOwner) != address(0), "Payment recipient can't be zero address");
+        require(price != 0, "Price can't be zero");
+        IERC20(usdcAddress).transferFrom(msg.sender, hotelOwner, price);
 
         _safeMint(msg.sender, tokenId);
 
@@ -119,7 +121,8 @@ contract Hotel42NFT is ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     function settingTokenURI(string memory _ipfs_hash, uint256 tokenID) public {
-        // TODO: require auth (anyone can update token URI...)
+        // TODO: should validate according to EIP-712
+        require(ownerOf(tokenID) == msg.sender);
         _setTokenURI(tokenID, _ipfs_hash);
     }
 

@@ -6,7 +6,7 @@ const contractName = "Hotel42Provider";
 
 module.exports = { hotel42NFTContractName: contractName }
 
-describe.only(contractName, function async() {
+describe(contractName, function async() {
   it("Successfully adds hotel", async function () {
     const hotel42Provider = await doFreshDeploy(contractName);
     await hotel42Provider.addHotel(

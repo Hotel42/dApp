@@ -73,6 +73,9 @@ contract Hotel42Provider is IH42P {
     Hotel memory currentHotel = hotelMap[_hotelId];
     RoomType memory room = roomTypeById[_roomtTypeId];
 
+    require(address(currentHotel.owner) != address(0), "Payment recipient can't be zero address");
+    require(room.price != 0, "Price can't be zero");
+
     return (room.price, currentHotel.owner);
   }
 
