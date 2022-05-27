@@ -1,6 +1,7 @@
 import React from 'react';
-import {Flex, Input, Box, Image, Badge, Button} from '@chakra-ui/react';
+import {Flex, Input, Box, Image, Badge, Button, Text} from '@chakra-ui/react';
 import {useContracts} from "../contexts";
+import {Spacer} from "./Spacer";
 
 export function ReservationCard({
   metadata,
@@ -15,8 +16,10 @@ export function ReservationCard({
   const state = getTraitTypeValue('state', metadata.attributes);
   const tokenId = metadata.tokenId;
   const imageUrl = metadata.image;
-  const checkInDate = getTraitTypeValue('checkInDate', metadata.attributes);
-  const checkOutDate = getTraitTypeValue('checkOutDate', metadata.attributes);
+  const checkInDateObj = new Date(getTraitTypeValue('checkInDate', metadata.attributes));
+  const checkInDateStr = `${month[checkInDateObj.getMonth()]} ${checkInDateObj.getDate()}`;
+  const checkOutDateObj = new Date(getTraitTypeValue('checkOutDate', metadata.attributes));
+  const checkOutDateStr = `${month[checkOutDateObj.getMonth()]} ${checkOutDateObj.getDate()}`;
 
   const [userDefinedPrice, setUserDefinedPrice] = React.useState(0);
   const [listPrice, setListPrice] = React.useState(0);
@@ -71,6 +74,8 @@ export function ReservationCard({
           </Box>
         </Box>
 
+        <Spacer height="2px"/>
+
         <Box
           mt='1'
           fontWeight='semibold'
@@ -81,45 +86,62 @@ export function ReservationCard({
           {hotelName}
         </Box>
 
-        <Box as='span' color='gray.600' fontSize='xs'>
-          {checkInDate} -> {checkOutDate}
+        <Spacer height="2px"/>
+
+        <Box as='span' color='gray.600' fontSize='sm'>
+          {checkInDateStr} &#8594; {checkOutDateStr}
         </Box>
         {/* TODO: need to move some of the below logic to the parent, so this can handle the marketplace buy case as well */}
         <Box>
           {listPrice > 0 ? (
             <div>
               {type === 'marketplace' ? (
-                <Button onClick={() => {
-                  // TODO matt wire this up here.
-                }}>Purchase for {listPrice}</Button>
+                <div>
+                  <Spacer height="12px"/>
+                  <Button
+                    onClick={() => {
+                    // TODO matt wire this up here.
+                    }}
+                    colorScheme="yellow"
+                  >Purchase for ${listPrice}</Button>
+                </div>
               ) : (
-                <div>Listed for ${listPrice}</div>
+                <div>
+                  <Spacer height="4px"/>
+                  <Badge colorScheme="purple">
+                    Listed for ${listPrice}
+                  </Badge>
+                </div>
               )}
             </div>
           ) : (
-            <Flex>
-              <Input
-                type='number'
-                placeholder='$'
-                onChange={(e) => setUserDefinedPrice(e.target.value)}
-              />
-              <Button
-                isDisabled={!userDefinedPrice}
-                onClick={async (e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (userDefinedPrice === 0) {
-                    throw new Error('user defined price has not been set');
-                  }
-                  const tx = await hotel42NftContract.approve(hotel42Marketplace.address, tokenId)
-                  await tx.wait()
-                  setItemUpForSale(userDefinedPrice);
-                  setListPrice(userDefinedPrice);
-                }}
-              >
-                List
-              </Button>
-            </Flex>
+            <>
+              <Spacer height="10px"/>
+              <Flex>
+                <Input
+                  type='number'
+                  placeholder='$'
+                  onChange={(e) => setUserDefinedPrice(e.target.value)}
+                />
+                <Spacer width="10px"/>
+                <Button
+                  isDisabled={!userDefinedPrice}
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (userDefinedPrice === 0) {
+                      throw new Error('user defined price has not been set');
+                    }
+                    const tx = await hotel42NftContract.approve(hotel42Marketplace.address, tokenId)
+                    await tx.wait()
+                    setItemUpForSale(userDefinedPrice);
+                    setListPrice(userDefinedPrice);
+                  }}
+                >
+                  List
+                </Button>
+              </Flex>
+            </>
           )}
         </Box>
       </Box>
@@ -136,3 +158,5 @@ const getTraitTypeValue = (traitType, attributesJson = []) => {
   }
   return val?.value;
 }
+
+const month = ["Jan", "Feb", "Mar", 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
