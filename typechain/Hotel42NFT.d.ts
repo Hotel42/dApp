@@ -23,8 +23,9 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "confirmReservation(string,address,uint256,uint256)": FunctionFragment;
+    "confirmReservation(address,uint256,uint256,string,string,string,string,string,uint256,string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getPublicResData(uint256)": FunctionFragment;
     "getReservationsByOwner()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
@@ -34,6 +35,7 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     "safeMint(address)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "settingTokenURI(string,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -48,10 +50,25 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
     functionFragment: "confirmReservation",
-    values: [string, string, BigNumberish, BigNumberish]
+    values: [
+      string,
+      BigNumberish,
+      BigNumberish,
+      string,
+      string,
+      string,
+      string,
+      string,
+      BigNumberish,
+      string
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "getApproved",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPublicResData",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -82,6 +99,10 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: "settingTokenURI",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
@@ -110,6 +131,10 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getPublicResData",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getReservationsByOwner",
     data: BytesLike
   ): Result;
@@ -131,6 +156,10 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "settingTokenURI",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -248,10 +277,16 @@ export class Hotel42NFT extends BaseContract {
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     confirmReservation(
-      ipfs_hash: string,
       _hotelContract: string,
       _hotelId: BigNumberish,
       _roomTypeId: BigNumberish,
+      _checkInDate: string,
+      _checkOutDate: string,
+      _city: string,
+      _state: string,
+      _hotelName: string,
+      _stars: BigNumberish,
+      _imageURL: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -259,6 +294,35 @@ export class Hotel42NFT extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    getPublicResData(
+      tokenID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        [
+          BigNumber,
+          BigNumber,
+          string,
+          string,
+          string,
+          string,
+          string,
+          BigNumber,
+          string
+        ] & {
+          hotelID: BigNumber;
+          roomTypeID: BigNumber;
+          checkInDate: string;
+          checkOutDate: string;
+          city: string;
+          state: string;
+          hotelName: string;
+          stars: BigNumber;
+          imageURL: string;
+        }
+      ]
+    >;
 
     getReservationsByOwner(overrides?: CallOverrides): Promise<[BigNumber[]]>;
 
@@ -307,6 +371,12 @@ export class Hotel42NFT extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    settingTokenURI(
+      _ipfs_hash: string,
+      tokenID: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -341,10 +411,16 @@ export class Hotel42NFT extends BaseContract {
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   confirmReservation(
-    ipfs_hash: string,
     _hotelContract: string,
     _hotelId: BigNumberish,
     _roomTypeId: BigNumberish,
+    _checkInDate: string,
+    _checkOutDate: string,
+    _city: string,
+    _state: string,
+    _hotelName: string,
+    _stars: BigNumberish,
+    _imageURL: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -352,6 +428,33 @@ export class Hotel42NFT extends BaseContract {
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  getPublicResData(
+    tokenID: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      BigNumber,
+      BigNumber,
+      string,
+      string,
+      string,
+      string,
+      string,
+      BigNumber,
+      string
+    ] & {
+      hotelID: BigNumber;
+      roomTypeID: BigNumber;
+      checkInDate: string;
+      checkOutDate: string;
+      city: string;
+      state: string;
+      hotelName: string;
+      stars: BigNumber;
+      imageURL: string;
+    }
+  >;
 
   getReservationsByOwner(overrides?: CallOverrides): Promise<BigNumber[]>;
 
@@ -397,6 +500,12 @@ export class Hotel42NFT extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  settingTokenURI(
+    _ipfs_hash: string,
+    tokenID: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -428,10 +537,16 @@ export class Hotel42NFT extends BaseContract {
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     confirmReservation(
-      ipfs_hash: string,
       _hotelContract: string,
       _hotelId: BigNumberish,
       _roomTypeId: BigNumberish,
+      _checkInDate: string,
+      _checkOutDate: string,
+      _city: string,
+      _state: string,
+      _hotelName: string,
+      _stars: BigNumberish,
+      _imageURL: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -439,6 +554,33 @@ export class Hotel42NFT extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getPublicResData(
+      tokenID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        BigNumber,
+        BigNumber,
+        string,
+        string,
+        string,
+        string,
+        string,
+        BigNumber,
+        string
+      ] & {
+        hotelID: BigNumber;
+        roomTypeID: BigNumber;
+        checkInDate: string;
+        checkOutDate: string;
+        city: string;
+        state: string;
+        hotelName: string;
+        stars: BigNumber;
+        imageURL: string;
+      }
+    >;
 
     getReservationsByOwner(overrides?: CallOverrides): Promise<BigNumber[]>;
 
@@ -476,6 +618,12 @@ export class Hotel42NFT extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    settingTokenURI(
+      _ipfs_hash: string,
+      tokenID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -601,15 +749,26 @@ export class Hotel42NFT extends BaseContract {
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     confirmReservation(
-      ipfs_hash: string,
       _hotelContract: string,
       _hotelId: BigNumberish,
       _roomTypeId: BigNumberish,
+      _checkInDate: string,
+      _checkOutDate: string,
+      _city: string,
+      _state: string,
+      _hotelName: string,
+      _stars: BigNumberish,
+      _imageURL: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getApproved(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPublicResData(
+      tokenID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -660,6 +819,12 @@ export class Hotel42NFT extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    settingTokenURI(
+      _ipfs_hash: string,
+      tokenID: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -698,15 +863,26 @@ export class Hotel42NFT extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     confirmReservation(
-      ipfs_hash: string,
       _hotelContract: string,
       _hotelId: BigNumberish,
       _roomTypeId: BigNumberish,
+      _checkInDate: string,
+      _checkOutDate: string,
+      _city: string,
+      _state: string,
+      _hotelName: string,
+      _stars: BigNumberish,
+      _imageURL: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getApproved(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getPublicResData(
+      tokenID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -756,6 +932,12 @@ export class Hotel42NFT extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    settingTokenURI(
+      _ipfs_hash: string,
+      tokenID: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

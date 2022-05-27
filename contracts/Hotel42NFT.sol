@@ -29,9 +29,6 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
     //token ID to reservation
     mapping(uint256 => Reservation) tokenIDToReservation;
 
-    //tokenID to URIs
-    mapping(uint256 => string) private _tokenURIs;
-
     // map of addresses to an array of reservation nft Id's
     // so in the /profile page we can query and view all reservations
     // belonging to a specific owner
@@ -53,9 +50,9 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
     );
 
     function safeMint(address to) public onlyOwner {
+        _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
-        _tokenIdCounter.increment();
     }
 
     function _baseURI() internal pure override returns (string memory) {
@@ -74,6 +71,7 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         uint256 _stars,
         string memory _imageURL
     ) public {
+        _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         (uint256 price, address owner) = IH42P(_hotelContract).getPaymentInfo(
             _hotelId,
@@ -97,8 +95,6 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         );
         tokenIDToReservation[tokenId] = new_res;
 
-        _tokenIdCounter.increment();
-
         emit ReservationMinted(tokenId, _hotelContract, _hotelId);
     }
 
@@ -113,19 +109,6 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
     {
         return tokenIDToReservation[tokenID];
     }
-
-    function getTokenURI(uint256 tokenID) public view returns (string memory) {
-        return _tokenURIs[tokenID];
-    }
-
-    // function updateReservation(
-    //     uint256 tokenID,
-    //     string memory _firstName,
-    //     string memory _lastName,
-    //     string memory _email
-    // ) public {
-    //     // TODO (aaftab), I think we want to update IPFS here
-    // }
 
     function getReservationsByOwner() public view returns (uint256[] memory) {
         return ownerToReservations[msg.sender];
