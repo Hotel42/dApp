@@ -6,7 +6,8 @@ import {
   Input,
   Box,
   Button,
-  Center, Flex, Heading, Text
+  Center, Flex, Heading, Text,
+  useToast,
 } from '@chakra-ui/react'
 import {useContracts} from '../contexts';
 import {constants} from 'ethers'
@@ -33,6 +34,7 @@ const MintReservationForm = ({
   const [selectedRoomType, setSelectedRoomType] = React.useState('');
 
   const { hotel42NftContract, hotel42Provider, usdc } = useContracts();
+  const toast = useToast();
 
   const  generateNewIpfsAndUpdateTokenUri = async (reservationInfo, tokenId) => {
     let { ipfs_hash } = await fetchIPFS(reservationInfo);
@@ -74,17 +76,35 @@ const MintReservationForm = ({
       await generateNewIpfsAndUpdateTokenUri(reservationInfo, tokenId);
 
       
-      // TODO add a success dialog
-      console.log('succesfully minted it!');
+      toast({
+        title: 'Reservation minted',
+        description: 'Your reservation will be in your profile page',
+        status: 'success',
+        duration: '3000',
+        isClosable: true,
+      });
     } catch (e) {
-      // TODO add a failure dialog
-      console.log('error confirming reservation: ', e);
+      toast({
+        title: 'Error minting reservation',
+        description: e,
+        status: 'error',
+        duration: '3000',
+        isClosable: true,
+      });
     }
   }
 
   return (
     <div>
-      <Box maxW="375px" mt="3rem">
+      <Box
+        maxW="375px"
+        p="20px"
+        borderWidth='1px'
+        borderRadius="10px"
+        maxH="fit-content"
+        boxShadow="xl"
+      >
+
 
         {/* Inputting your name */}
         <Heading size="sm" fontWeight="600">
@@ -180,13 +200,12 @@ const MintReservationForm = ({
 
         {/* TODO: need to just approve the room price amount   */}
         {/* TODO: only require approve() if not already approved */}
-        <Button colorScheme="teal" onClick={async () => {
+        <Button colorScheme="yellow" onClick={async () => {
           await usdc.approve(hotel42NftContract.address, constants.MaxUint256)
           await confirmReservation()
           }}>
-          Submit
+          Reserve
         </Button>
-        <Spacer height="200px"/>
       </Box>
     </div>
   );

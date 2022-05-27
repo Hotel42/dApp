@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c3213b04-f5e8-43e3-a999-698c20396789" name="Changes" comment="setting up foundational repo">
-      <change afterPath="$PROJECT_DIR$/src/components/PageContainer.jsx" afterDir="false" />
+    <list default="true" id="d2c2f1d9-ca8d-4214-b637-cae539d71fbf" name="Changes" comment="changes&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml">
+      <change afterPath="$PROJECT_DIR$/src/utils/useHover.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/deployHotel42Provider.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/deployHotel42Provider.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/addresses.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/addresses.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/HotelCard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/HotelCard.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/MintReservationForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MintReservationForm.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Spacer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Spacer.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/book.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/book.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/book/[id].jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/book/[id].jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/profile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typechain/hardhat.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typechain/hardhat.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/typechain/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/typechain/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +87,7 @@
       <updated>1652531658511</updated>
     </task>
     <task active="true" id="Default" summary="Default task">
-      <changelist id="c3213b04-f5e8-43e3-a999-698c20396789" name="Changes" comment="" />
+      <changelist id="d2c2f1d9-ca8d-4214-b637-cae539d71fbf" name="Changes" comment="changes&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml" />
       <created>1652868774482</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -99,6 +98,7 @@
       <workItem from="1653558979307" duration="1952000" />
       <workItem from="1653604174206" duration="26000" />
       <workItem from="1653644349125" duration="5083000" />
+      <workItem from="1653685327321" duration="5083000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />

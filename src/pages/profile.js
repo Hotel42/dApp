@@ -14,7 +14,10 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  useToast,
 } from '@chakra-ui/react'
+import {PageContainer} from "../components/PageContainer";
+import {useHover} from "../utils/useHover";
 
 
 const fetchMetadata = (uri) => fetch(uri, {
@@ -24,7 +27,20 @@ const fetchMetadata = (uri) => fetch(uri, {
 })
 
 const ManageReservation = ({ reservation }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    isOpen: isUpdateBookingOpen,
+    onOpen: onUpdateBookingOpen,
+    onClose: onUpdateBookingClose,
+  } = useDisclosure()
+
+  const {
+    isOpen: isListPriceOpen,
+    onOpen: onListPriceOpen,
+    onClose: onListPriceClose,
+  } = useDisclosure()
+
+  const toast = useToast();
+  const [hoverRef, isHovered] = useHover();
 
   const { tokenId, attributes } = reservation;
   const { hotel42NftContract, hotel42Marketplace } = useContracts();
@@ -59,6 +75,13 @@ const ManageReservation = ({ reservation }) => {
       const res = await hotel42Marketplace.deleteMarketListing(listingId);
       await res.wait();
       console.log('done! should refresh data...')
+      toast({
+        title: 'Reservation deleted',
+        description: 'Your reservation should only be seen by you from now on',
+        status: 'success',
+        duration: '3000',
+        isClosable: true,
+      });
       setListPrice(0)
     } catch (e) {
       console.log('Error listing NFT up for sale: ', e);
@@ -88,45 +111,84 @@ const ManageReservation = ({ reservation }) => {
             Listed for ${listPrice}
           </Badge>
         </div>
-        <Button mt='1rem' onClick={deleteMarketListing}>Delete Listing</Button>
+        <Spacer height="12px" />
+        <Button colorScheme="yellow" onClick={deleteMarketListing}>Delete Listing</Button>
       </Box>
     )
   }
 
   return (<>
+
     <Spacer height="10px" />
     <Flex>
-      <Input
-        type='number'
-        placeholder='$'
-        onChange={(e) => setUserDefinedPrice(e.target.value)}
-      />
-      <Spacer width="10px" />
       <Button
-        isDisabled={!userDefinedPrice}
-        onClick={async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (userDefinedPrice === 0) {
-            throw new Error('user defined price has not been set');
-          }
-          const tx = await hotel42NftContract.approve(hotel42Marketplace.address, tokenId)
-          await tx.wait()
-          await setItemUpForSale(userDefinedPrice);
+        colorScheme="yellow"
+        onClick={() => {
+          onListPriceOpen();
         }}
       >
         List
       </Button>
+      <Spacer width="10px" />
+      <Button
+        onClick={onUpdateBookingOpen}
+        colorScheme="yellow"
+      >
+        Update Booking
+      </Button>
     </Flex>
-    <Button mt='1rem' onClick={onOpen}>Update Booking Info</Button>
 
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isUpdateBookingOpen} onClose={onUpdateBookingClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Booking Info</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <UpdateReservationForm tokenId={tokenId} />
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+
+    <Modal isOpen={isListPriceOpen} onClose={onListPriceClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>List your reservation resale price</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Input
+            type='number'
+            placeholder='$'
+            onChange={(e) => setUserDefinedPrice(e.target.value)}
+          />
+          <Spacer height="20px"/>
+          <Button colorScheme="yellow" onClick={async (e) => {
+            try {
+              e.preventDefault();
+              e.stopPropagation();
+              if (userDefinedPrice === 0) {
+                throw new Error('user defined price has not been set');
+              }
+              const tx = await hotel42NftContract.approve(hotel42Marketplace.address, tokenId)
+              await tx.wait()
+              await setItemUpForSale(userDefinedPrice);
+              toast({
+                title: `Reservation listed for $${userDefinedPrice}`,
+                description: 'Your reservation will be available in the marketplace',
+                status: 'success',
+                duration: '3000',
+                isClosable: true,
+              });
+            } catch (e) {
+              toast({
+                title: 'Reservation listing failed',
+                description: e,
+                status: 'error',
+                duration: '3000',
+                isClosable: true,
+              });
+            }
+          }}>Submit</Button>
+          <Spacer height="20px"/>
         </ModalBody>
       </ModalContent>
     </Modal>
@@ -162,18 +224,21 @@ export default function ProfilePage() {
   }, [hotel42NftContract, accountContext.address]);
 
   return (
-    <Box>
-      <Heading>My Reservations</Heading>
-      {reservations.map(reservationMetaData => (
-        <ReservationCard
-          key={reservationMetaData.tokenId}
-          // passing this in so we can keep the same metadata structure
-          // when we update IPFS
-          metadata={reservationMetaData}
-          ManageReservation={<ManageReservation reservation={reservationMetaData} />}
-        />
-      ))}
-    </Box>
+    <PageContainer>
+      <Box>
+        <Heading>My Reservations</Heading>
+        <Spacer height="20px"/>
+        {reservations.map(reservationMetaData => (
+          <ReservationCard
+            key={reservationMetaData.tokenId}
+            // passing this in so we can keep the same metadata structure
+            // when we update IPFS
+            metadata={reservationMetaData}
+            ManageReservation={<ManageReservation reservation={reservationMetaData} />}
+          />
+        ))}
+      </Box>
+    </PageContainer>
   );
 }
 

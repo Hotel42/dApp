@@ -4,6 +4,7 @@ import { useContracts } from "../contexts";
 import { ReservationCard } from '../components/ReservationCard'
 import { constants } from 'ethers'
 import { Spacer } from "../components/Spacer";
+import {PageContainer} from "../components/PageContainer";
 
 
 const fetchMetadata = (uri) => fetch(uri, {
@@ -77,8 +78,9 @@ export default function MarketplacePage() {
   )
 
   return (
-    <Box>
+    <PageContainer>
       <Heading>Marketplace</Heading>
+      <Spacer height="20px"/>
       {
         marketListings.map(reservation => (<ReservationCard
           type="marketplace"
@@ -87,6 +89,6 @@ export default function MarketplacePage() {
           ManageReservation={<ManageReservation reservation={reservation} />}
         />))
       }
-    </Box>
+    </PageContainer>
   );
 }
