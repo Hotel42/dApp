@@ -2,7 +2,6 @@ import React from 'react';
 import {
   FormControl,
   FormLabel,
-  Select,
   Input,
   Box,
   Button,
@@ -20,28 +19,25 @@ const fetchIPFS = (data) => fetch('/api/ipfs', {
 }).then(res => res.json()).catch(err => alert(`IPFS request error: ${err.message}`))
 
 
-const UpdateReservationForm = ({
-  hotel,
-  roomTypes,
-}) => {
-  const [firstName, setFirstName] = React.useState('');
-  const [lastName, setLastName] = React.useState('');
-  const [email, setEmail] = React.useState('');
+const UpdateReservationForm = ({tokenId}) => {
+  const [firstName, setFirstName] = React.useState();
+  const [lastName, setLastName] = React.useState();
+  const [email, setEmail] = React.useState();
 
-  const { hotel42NftContract, hotel42Provider, usdc } = useContracts();
+  const { hotel42NftContract } = useContracts();
 
-  const  generateNewIpfsAndUpdateTokenUri = async (reservationInfo, tokenId) => {
-    let { ipfs_hash } = await fetchIPFS(reservationInfo);
-  
+  const  generateNewIpfsAndUpdateTokenUri = async (reservationInfo) => {
+    let {ipfs_hash} = await fetchIPFS(reservationInfo);
     const tx = await hotel42NftContract.settingTokenURI(ipfs_hash, tokenId);
     await tx.wait();
   }
   
 
   const updateReservation = async () => {
+    console.log('updateReservation', tokenId)
     try {
 
-      const old_ipfs_hash = hotel42NftContract._tokenURIs(tokenId);   //this mapping variable is not visible but is created by openzepplin _setTokenURI function
+      const old_ipfs_hash = hotel42NftContract.tokenURI(tokenId);
 
       const reservationInfo = {
         privateReservationInfo: {
@@ -53,7 +49,7 @@ const UpdateReservationForm = ({
         old_hash: old_ipfs_hash
     };
 
-    generateNewIpfsAndUpdateTokenUri(reservationInfo, tokenId);
+    await generateNewIpfsAndUpdateTokenUri(reservationInfo);
 
     console.log('succesfully updated reservation!');
 
@@ -94,7 +90,7 @@ const UpdateReservationForm = ({
             onChange={(e) => setEmail(e.target.value)}
           />
         </FormControl>
-        <Button colorScheme="teal" onClick={() => updateReservation}>
+        <Button mt="1rem" colorScheme="teal" onClick={updateReservation}>
           Update
         </Button>
       </Box>
