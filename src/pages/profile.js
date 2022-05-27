@@ -16,8 +16,8 @@ export default function ProfilePage() {
   const { hotel42NftContract } = useContracts();
 
   const fetch = async () => {
-    const tx = await hotel42NftContract.getReservationsByOwner()
-    const reservationIds = tx.map(reservationId => reservationId.toNumber());
+    const tx = await hotel42NftContract.tokensOfOwner()
+    const reservationIds = tx.map(reservationId => reservationId.toNumber()).filter(i => i); // zero is bad
 
 
     const reservationsUris = await Promise.all(reservationIds.map(rId => hotel42NftContract.tokenURI(rId)));
@@ -44,6 +44,7 @@ export default function ProfilePage() {
       <Heading>My Reservations</Heading>
       {reservations.map(reservationMetaData => (
         <ReservationCard
+          id={reservationMetaData.tokenId}
           // passing this in so we can keep the same metadata structure
           // when we update IPFS
           metadata={reservationMetaData}

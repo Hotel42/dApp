@@ -10,13 +10,13 @@ const { ethers } = hre;
 const baseAmount = ethers.BigNumber.from("1000000000000000000")
 const mockUSDCconstructorArgs = [baseAmount.mul(ethers.BigNumber.from("1000000000"))]
 
-const numAccounts = 2;
+const numAccounts = 5;
 const amount = 100000;
 
 async function spreadTheWealth(mockUSDCContract) {
   const [owner, ...benefactors] = await ethers.getSigners();
 
-  return Promise.all(benefactors.slice(1, numAccounts + 1).map(account => {
+  return Promise.all(benefactors.slice(0, numAccounts + 1).map(account => {
     return mockUSDCContract.connect(owner).transfer(account.address, baseAmount.mul(ethers.BigNumber.from(amount))).then(res => {
       console.log(`${account.address} given ${amount} mock USDC!`)
     })

@@ -4,12 +4,13 @@ pragma solidity ^0.8.4;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./IH42P.sol";
 
-contract Hotel42NFT is ERC721URIStorage, Ownable {
+contract Hotel42NFT is ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     struct Reservation {
@@ -29,16 +30,36 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
     //token ID to reservation
     mapping(uint256 => Reservation) tokenIDToReservation;
 
-    // map of addresses to an array of reservation nft Id's
-    // so in the /profile page we can query and view all reservations
-    // belonging to a specific owner
-    mapping(address => uint256[]) ownerToReservations;
-    mapping(address => mapping(uint256 => uint256)) hotelAccountBalances;
-
     Counters.Counter private _tokenIdCounter;
 
     constructor(address _usdcAddress) ERC721("Hotel42", "H42") {
+        _tokenIdCounter.increment(); // prevent tokenId from being zero (that's bad since it's "null" value)
         usdcAddress = _usdcAddress;
+    }
+
+    // The following functions are overrides required by Solidity.
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
+        internal
+        override(ERC721, ERC721Enumerable)
+    {
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        return super.tokenURI(tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC721Enumerable) returns (bool) {
+        return super.supportsInterface(interfaceId);
     }
 
     /* event to store token ID in FE for each NFT.
@@ -80,7 +101,6 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         IERC20(usdcAddress).transferFrom(msg.sender, owner, price);
 
         _safeMint(msg.sender, tokenId);
-        ownerToReservations[msg.sender].push(tokenId);
 
         Reservation memory new_res = Reservation(
             _hotelId,
@@ -110,7 +130,15 @@ contract Hotel42NFT is ERC721URIStorage, Ownable {
         return tokenIDToReservation[tokenID];
     }
 
-    function getReservationsByOwner() public view returns (uint256[] memory) {
-        return ownerToReservations[msg.sender];
+    // TODO: get tokens of owner to return correct results
+    // https://docs.openzeppelin.com/contracts/4.x/api/token/erc721#IERC721Enumerable-tokenOfOwnerByIndex-address-uint256-
+    function tokensOfOwner() external view returns(uint256[] memory ownerTokens) {
+        uint256 tokenCount = balanceOf(msg.sender);
+
+        // TODO: tokenOfOwnerByIndex(address owner, uint256 index)
+        /*
+        Returns a token ID owned by owner at a given index of its token list.
+        Use along with balanceOf to enumerate all of owner's tokens.
+        */
     }
 }

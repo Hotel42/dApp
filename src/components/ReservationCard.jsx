@@ -1,15 +1,17 @@
 import React from 'react';
 import {Flex, Input, Box, Image, Badge, Button} from '@chakra-ui/react';
 import {useContracts} from "../contexts";
+import {constants} from 'ethers'
 
 export function ReservationCard({
   metadata,
+  itemId,
   // the type can be of value 'profile' or 'marketplace'
   // type 'profile' has the ability to list an NFT for sale with an input box.
   // type 'marketplace' only has the ability see an NFT for sale price and purchase it.
   type,
 }) {
-  const { hotel42Marketplace, hotel42NftContract } = useContracts();
+  const { hotel42Marketplace, hotel42NftContract, usdc } = useContracts();
   const hotelName = getTraitTypeValue('hotelName', metadata.attributes);
   const city = getTraitTypeValue('city', metadata.attributes);
   const state = getTraitTypeValue('state', metadata.attributes);
@@ -89,8 +91,9 @@ export function ReservationCard({
           {listPrice > 0 ? (
             <div>
               {type === 'marketplace' ? (
-                <Button onClick={() => {
-                  // TODO matt wire this up here.
+                <Button onClick={async () => {
+                  await usdc.approve(hotel42Marketplace.address, constants.MaxUint256);
+                  await hotel42Marketplace.purchaseMarketItem(itemId);
                 }}>Purchase for {listPrice}</Button>
               ) : (
                 <div>Listed for ${listPrice}</div>

@@ -149,7 +149,10 @@ const MintReservationForm = ({
 
         {/* TODO: need to just approve the room price amount   */}
         {/* TODO: only require approve() if not already approved */}
-        <Button colorScheme="teal" onClick={() => usdc.approve(hotel42NftContract.address, constants.MaxUint256).then(confirmReservation)}>
+        <Button colorScheme="teal" onClick={async () => {
+          await usdc.approve(hotel42NftContract.address, constants.MaxUint256)
+          await confirmReservation()
+          }}>
           Submit
         </Button>
       </Box>

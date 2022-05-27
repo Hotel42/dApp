@@ -19,31 +19,23 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface Hotel42NFTInterface extends ethers.utils.Interface {
+interface ERC721EnumerableInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "confirmReservation(address,uint256,uint256,string,string,string,string,string,uint256,string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getPublicResData(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
-    "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
-    "safeMint(address)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
-    "settingTokenURI(string,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
     "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
-    "tokensOfOwner()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -52,26 +44,7 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "confirmReservation",
-    values: [
-      string,
-      BigNumberish,
-      BigNumberish,
-      string,
-      string,
-      string,
-      string,
-      string,
-      BigNumberish,
-      string
-    ]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getApproved",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPublicResData",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -79,16 +52,10 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "safeMint", values: [string]): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish]
@@ -96,10 +63,6 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "settingTokenURI",
-    values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -119,10 +82,6 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "tokensOfOwner",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
   ): string;
@@ -130,23 +89,11 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
-  ): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "confirmReservation",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getApproved",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getPublicResData",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -154,23 +101,13 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "safeMint", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "settingTokenURI",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -188,10 +125,6 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "tokensOfOwner",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
   ): Result;
@@ -199,23 +132,15 @@ interface Hotel42NFTInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
-    "ReservationMinted(uint256,address,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "ReservationMinted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -235,23 +160,11 @@ export type ApprovalForAllEvent = TypedEvent<
   }
 >;
 
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string] & { previousOwner: string; newOwner: string }
->;
-
-export type ReservationMintedEvent = TypedEvent<
-  [BigNumber, string, BigNumber] & {
-    tokenID: BigNumber;
-    hotelContract: string;
-    hotelId: BigNumber;
-  }
->;
-
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
 >;
 
-export class Hotel42NFT extends BaseContract {
+export class ERC721Enumerable extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -292,7 +205,7 @@ export class Hotel42NFT extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: Hotel42NFTInterface;
+  interface: ERC721EnumerableInterface;
 
   functions: {
     approve(
@@ -303,53 +216,10 @@ export class Hotel42NFT extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    confirmReservation(
-      _hotelContract: string,
-      _hotelId: BigNumberish,
-      _roomTypeId: BigNumberish,
-      _checkInDate: string,
-      _checkOutDate: string,
-      _city: string,
-      _state: string,
-      _hotelName: string,
-      _stars: BigNumberish,
-      _imageURL: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
-
-    getPublicResData(
-      tokenID: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        [
-          BigNumber,
-          BigNumber,
-          string,
-          string,
-          string,
-          string,
-          string,
-          BigNumber,
-          string
-        ] & {
-          hotelID: BigNumber;
-          roomTypeID: BigNumber;
-          checkInDate: string;
-          checkOutDate: string;
-          city: string;
-          state: string;
-          hotelName: string;
-          stars: BigNumber;
-          imageURL: string;
-        }
-      ]
-    >;
 
     isApprovedForAll(
       owner: string,
@@ -359,21 +229,10 @@ export class Hotel42NFT extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    safeMint(
-      to: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -393,12 +252,6 @@ export class Hotel42NFT extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    settingTokenURI(
-      _ipfs_hash: string,
-      tokenID: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -425,21 +278,12 @@ export class Hotel42NFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    tokensOfOwner(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber[]] & { ownerTokens: BigNumber[] }>;
-
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transferFrom(
       from: string,
       to: string,
       tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    transferOwnership(
-      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -452,51 +296,10 @@ export class Hotel42NFT extends BaseContract {
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  confirmReservation(
-    _hotelContract: string,
-    _hotelId: BigNumberish,
-    _roomTypeId: BigNumberish,
-    _checkInDate: string,
-    _checkOutDate: string,
-    _city: string,
-    _state: string,
-    _hotelName: string,
-    _stars: BigNumberish,
-    _imageURL: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
-
-  getPublicResData(
-    tokenID: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<
-    [
-      BigNumber,
-      BigNumber,
-      string,
-      string,
-      string,
-      string,
-      string,
-      BigNumber,
-      string
-    ] & {
-      hotelID: BigNumber;
-      roomTypeID: BigNumber;
-      checkInDate: string;
-      checkOutDate: string;
-      city: string;
-      state: string;
-      hotelName: string;
-      stars: BigNumber;
-      imageURL: string;
-    }
-  >;
 
   isApprovedForAll(
     owner: string,
@@ -506,18 +309,7 @@ export class Hotel42NFT extends BaseContract {
 
   name(overrides?: CallOverrides): Promise<string>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
-
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  safeMint(
-    to: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   "safeTransferFrom(address,address,uint256)"(
     from: string,
@@ -537,12 +329,6 @@ export class Hotel42NFT extends BaseContract {
   setApprovalForAll(
     operator: string,
     approved: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  settingTokenURI(
-    _ipfs_hash: string,
-    tokenID: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -566,19 +352,12 @@ export class Hotel42NFT extends BaseContract {
 
   tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  tokensOfOwner(overrides?: CallOverrides): Promise<BigNumber[]>;
-
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferFrom(
     from: string,
     to: string,
     tokenId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  transferOwnership(
-    newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -591,51 +370,10 @@ export class Hotel42NFT extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    confirmReservation(
-      _hotelContract: string,
-      _hotelId: BigNumberish,
-      _roomTypeId: BigNumberish,
-      _checkInDate: string,
-      _checkOutDate: string,
-      _city: string,
-      _state: string,
-      _hotelName: string,
-      _stars: BigNumberish,
-      _imageURL: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
-
-    getPublicResData(
-      tokenID: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        BigNumber,
-        BigNumber,
-        string,
-        string,
-        string,
-        string,
-        string,
-        BigNumber,
-        string
-      ] & {
-        hotelID: BigNumber;
-        roomTypeID: BigNumber;
-        checkInDate: string;
-        checkOutDate: string;
-        city: string;
-        state: string;
-        hotelName: string;
-        stars: BigNumber;
-        imageURL: string;
-      }
-    >;
 
     isApprovedForAll(
       owner: string,
@@ -645,13 +383,7 @@ export class Hotel42NFT extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<string>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
-
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    safeMint(to: string, overrides?: CallOverrides): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -671,12 +403,6 @@ export class Hotel42NFT extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    settingTokenURI(
-      _ipfs_hash: string,
-      tokenID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -700,19 +426,12 @@ export class Hotel42NFT extends BaseContract {
 
     tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    tokensOfOwner(overrides?: CallOverrides): Promise<BigNumber[]>;
-
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
       to: string,
       tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    transferOwnership(
-      newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -754,40 +473,6 @@ export class Hotel42NFT extends BaseContract {
       { owner: string; operator: string; approved: boolean }
     >;
 
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): TypedEventFilter<
-      [string, string],
-      { previousOwner: string; newOwner: string }
-    >;
-
-    OwnershipTransferred(
-      previousOwner?: string | null,
-      newOwner?: string | null
-    ): TypedEventFilter<
-      [string, string],
-      { previousOwner: string; newOwner: string }
-    >;
-
-    "ReservationMinted(uint256,address,uint256)"(
-      tokenID?: BigNumberish | null,
-      hotelContract?: string | null,
-      hotelId?: BigNumberish | null
-    ): TypedEventFilter<
-      [BigNumber, string, BigNumber],
-      { tokenID: BigNumber; hotelContract: string; hotelId: BigNumber }
-    >;
-
-    ReservationMinted(
-      tokenID?: BigNumberish | null,
-      hotelContract?: string | null,
-      hotelId?: BigNumberish | null
-    ): TypedEventFilter<
-      [BigNumber, string, BigNumber],
-      { tokenID: BigNumber; hotelContract: string; hotelId: BigNumber }
-    >;
-
     "Transfer(address,address,uint256)"(
       from?: string | null,
       to?: string | null,
@@ -816,27 +501,8 @@ export class Hotel42NFT extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    confirmReservation(
-      _hotelContract: string,
-      _hotelId: BigNumberish,
-      _roomTypeId: BigNumberish,
-      _checkInDate: string,
-      _checkOutDate: string,
-      _city: string,
-      _state: string,
-      _hotelName: string,
-      _stars: BigNumberish,
-      _imageURL: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     getApproved(
       tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPublicResData(
-      tokenID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -848,20 +514,9 @@ export class Hotel42NFT extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    safeMint(
-      to: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -882,12 +537,6 @@ export class Hotel42NFT extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    settingTokenURI(
-      _ipfs_hash: string,
-      tokenID: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -914,19 +563,12 @@ export class Hotel42NFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    tokensOfOwner(overrides?: CallOverrides): Promise<BigNumber>;
-
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferFrom(
       from: string,
       to: string,
       tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -943,27 +585,8 @@ export class Hotel42NFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    confirmReservation(
-      _hotelContract: string,
-      _hotelId: BigNumberish,
-      _roomTypeId: BigNumberish,
-      _checkInDate: string,
-      _checkOutDate: string,
-      _city: string,
-      _state: string,
-      _hotelName: string,
-      _stars: BigNumberish,
-      _imageURL: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     getApproved(
       tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPublicResData(
-      tokenID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -975,20 +598,9 @@ export class Hotel42NFT extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    safeMint(
-      to: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -1009,12 +621,6 @@ export class Hotel42NFT extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    settingTokenURI(
-      _ipfs_hash: string,
-      tokenID: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1041,19 +647,12 @@ export class Hotel42NFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    tokensOfOwner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferFrom(
       from: string,
       to: string,
       tokenId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
