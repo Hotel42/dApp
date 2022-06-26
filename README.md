@@ -1,4 +1,16 @@
 # Hotel42 dApp
+## Why we built this
+Hotel reservations are an illiquid asset, what if plans change and you're no longer able to make the booking? There should be a cost effective way to sell your booking to another guest, that's why we built Hotel42. By turning hotel reservations into NFTs, which can then be freely traded.
+
+## Features
+- Reservation booking page to select a list of hotels to mint a NFT reservation
+- Profile page to manage your reservations and list it for sale
+- Marketplace to browse listed reservations to purchase
+
+## Demo
+https://www.youtube.com/watch?v=10kwBeJFu38&ab_channel=JKDuDaDuDe
+
+
 
 ## How to quickly build contract
 1. run `npx hardhat node` in the root directory to start local node
