@@ -10,7 +10,12 @@ Hotel reservations are an illiquid asset, what if plans change and you're no lon
 ## Demo
 https://www.youtube.com/watch?v=10kwBeJFu38&ab_channel=JKDuDaDuDe
 
-
+## Tools used
+- Next.js
+- Chakra
+- Solidity
+- Hardhat
+- IPFS
 
 ## How to quickly build contract
 1. run `npx hardhat node` in the root directory to start local node
